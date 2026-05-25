@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F5F5F5">
+
+    <!-- Header đỏ -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#EF5350"
+        android:padding="16dp"
+        android:gravity="center_vertical">
+
+        <!-- Avatar -->
+        <TextView
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:gravity="center"
+            android:text="👤"
+            android:textSize="28sp"
+            android:background="#FFCDD2"
+            android:layout_marginEnd="14dp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Người dùng"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ngdung@email.com"
+                android:textSize="13sp"
+                android:textColor="#FFCDD2" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Stats -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#EF5350">
+
+        <LinearLayout android:layout_width="0dp" android:layout_height="60dp"
+            android:layout_weight="1" android:orientation="vertical"
+            android:gravity="center" android:background="#E53935">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="24" android:textSize="18sp" android:textStyle="bold"
+                android:textColor="@android:color/white" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Theo dõi" android:textSize="11sp" android:textColor="#FFCDD2" />
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="0dp" android:layout_height="60dp"
+            android:layout_weight="1" android:orientation="vertical"
+            android:gravity="center" android:background="#EF5350">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="158" android:textSize="18sp" android:textStyle="bold"
+                android:textColor="@android:color/white" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Đã đọc" android:textSize="11sp" android:textColor="#FFCDD2" />
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="0dp" android:layout_height="60dp"
+            android:layout_weight="1" android:orientation="vertical"
+            android:gravity="center" android:background="#E53935">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="12" android:textSize="18sp" android:textStyle="bold"
+                android:textColor="@android:color/white" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Đã tải" android:textSize="11sp" android:textColor="#FFCDD2" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Menu items -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <!-- THƯ VIỆN -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="THƯ VIỆN"
+                android:textSize="11sp" android:textStyle="bold"
+                android:textColor="#AAAAAA"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="6dp" />
+
+            <androidx.cardview.widget.CardView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="1dp">
+                <LinearLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <!-- Truyện theo dõi -->
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+                        android:orientation="horizontal" android:gravity="center_vertical"
+                        android:paddingStart="16dp" android:paddingEnd="16dp"
+                        android:background="?attr/selectableItemBackground">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="📚  " android:textSize="18sp" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Truyện theo dõi" android:textSize="15sp"
+                            android:textColor="#333333" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="24" android:textSize="12sp"
+                            android:textColor="@android:color/white"
+                            android:background="#EF5350"
+                            android:paddingStart="7dp" android:paddingEnd="7dp"
+                            android:paddingTop="2dp" android:paddingBottom="2dp" />
+                    </LinearLayout>
+                    <View android:layout_width="match_parent" android:layout_height="0.5dp"
+                        android:background="#EEEEEE" />
+                    <!-- Yêu thích -->
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+                        android:orientation="horizontal" android:gravity="center_vertical"
+                        android:paddingStart="16dp" android:paddingEnd="16dp"
+                        android:background="?attr/selectableItemBackground">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="❤️  " android:textSize="18sp" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Yêu thích" android:textSize="15sp"
+                            android:textColor="#333333" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="15" android:textSize="12sp"
+                            android:textColor="@android:color/white"
+                            android:background="#EF5350"
+                            android:paddingStart="7dp" android:paddingEnd="7dp"
+                            android:paddingTop="2dp" android:paddingBottom="2dp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- CÀI ĐẶT -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="CÀI ĐẶT"
+                android:textSize="11sp" android:textStyle="bold"
+                android:textColor="#AAAAAA"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="6dp" />
+
+            <androidx.cardview.widget.CardView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="1dp">
+                <LinearLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+                        android:orientation="horizontal" android:gravity="center_vertical"
+                        android:paddingStart="16dp" android:paddingEnd="16dp"
+                        android:background="?attr/selectableItemBackground">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="⚙️  " android:textSize="18sp" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Cài đặt chung" android:textSize="15sp"
+                            android:textColor="#333333" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="›" android:textSize="20sp" android:textColor="#CCCCCC" />
+                    </LinearLayout>
+
+                    <View android:layout_width="match_parent" android:layout_height="0.5dp"
+                        android:background="#EEEEEE" />
+
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+                        android:orientation="horizontal" android:gravity="center_vertical"
+                        android:paddingStart="16dp" android:paddingEnd="16dp"
+                        android:background="?attr/selectableItemBackground">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="🌙  " android:textSize="18sp" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Giao diện" android:textSize="15sp"
+                            android:textColor="#333333" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Sáng  ›" android:textSize="13sp" android:textColor="#AAAAAA" />
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Đăng xuất -->
+            <LinearLayout
+                android:id="@+id/btnLogout"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingStart="4dp"
+                android:background="?attr/selectableItemBackground"
+                android:layout_marginTop="8dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="🚪  " android:textSize="18sp" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Đăng xuất"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:textColor="#E53935" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        app:menu="@menu/bottom_nav_menu"
+        xmlns:app="http://schemas.android.com/apk/res-auto" />
+
+</LinearLayout>
