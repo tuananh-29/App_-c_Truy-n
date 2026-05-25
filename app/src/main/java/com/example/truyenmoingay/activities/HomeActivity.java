@@ -2,6 +2,7 @@ package com.example.truyenmoingay.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -25,32 +26,41 @@ public class HomeActivity extends AppCompatActivity {
 
         List<Comic> mockData = getMockComics();
 
-        // Lưới 2 cột - Mới cập nhật
+        // 1. Lưới 2 cột - Mới cập nhật (Kiểm tra null)
         RecyclerView rvGrid = findViewById(R.id.rvGrid);
-        rvGrid.setLayoutManager(new GridLayoutManager(this, 2));
-        rvGrid.setAdapter(new ComicAdapter(mockData, this::openDetail));
+        if (rvGrid != null) {
+            rvGrid.setLayoutManager(new GridLayoutManager(this, 2));
+            rvGrid.setAdapter(new ComicAdapter(mockData, this::openDetail));
+        }
 
-        // Danh sách dọc - Top truyện
+        // 2. Danh sách dọc - Top truyện (Kiểm tra null)
         RecyclerView rvList = findViewById(R.id.rvList);
-        rvList.setLayoutManager(new LinearLayoutManager(this));
-        rvList.setAdapter(new ComicAdapter(mockData, this::openDetail));
+        if (rvList != null) {
+            rvList.setLayoutManager(new LinearLayoutManager(this));
+            rvList.setAdapter(new ComicAdapter(mockData, this::openDetail));
+        }
 
-        // BottomNav — phải nằm BÊN TRONG onCreate
+        // 3. BottomNav — (Kiểm tra null)
         BottomNavigationView nav = findViewById(R.id.bottomNav);
-        nav.setSelectedItemId(R.id.nav_home);
-        nav.setOnItemSelectedListener(item -> {
-            int id = item.getItemId();
-            if (id == R.id.nav_hashtag) {
-                startActivity(new Intent(this, HashtagActivity.class)); finish(); return true;
-            } else if (id == R.id.nav_following) {
-                startActivity(new Intent(this, FollowingActivity.class)); finish(); return true;
-            } else if (id == R.id.nav_explore) {
-                startActivity(new Intent(this, ExploreActivity.class)); finish(); return true;
-            } else if (id == R.id.nav_profile) {
-                startActivity(new Intent(this, ProfileActivity.class)); finish(); return true;
-            }
-            return true;
-        });
+        if (nav != null) {
+            nav.setSelectedItemId(R.id.nav_home);
+            nav.setOnItemSelectedListener(item -> {
+                int id = item.getItemId();
+                if (id == R.id.nav_hashtag) {
+                    startActivity(new Intent(this, HashtagActivity.class));
+                } else if (id == R.id.nav_following) {
+                    startActivity(new Intent(this, FollowingActivity.class));
+                } else if (id == R.id.nav_explore) {
+                    startActivity(new Intent(this, ExploreActivity.class));
+                } else if (id == R.id.nav_profile) {
+                    startActivity(new Intent(this, ProfileActivity.class));
+                }
+                return true; // Bỏ các lệnh finish() đi để người dùng có thể bấm Back quay lại được
+            });
+        } else {
+            // Cảnh báo nhỏ hiện lên màn hình để bạn biết XML đang thiếu BottomNav
+            Toast.makeText(this, "Chưa tìm thấy bottomNav trong XML!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private List<Comic> getMockComics() {
@@ -59,7 +69,7 @@ public class HomeActivity extends AppCompatActivity {
                 new Comic(2, "Naruto",             "Masashi Kishi",  700,  4.8f),
                 new Comic(3, "Demon Slayer",       "Koyoharu G.",    205,  4.8f),
                 new Comic(4, "Attack on Titan",    "Hajime Isayama", 139,  4.9f),
-                new Comic(5, "My Hero Academia",   "Kōhei Horikoshi",430,  4.7f),
+                new Comic(5, "My Hero Academia",   "Kōhei Horikoshi", 430,  4.7f),
                 new Comic(6, "Dragon Ball",        "Akira Toriyama", 519,  4.8f)
         );
     }
