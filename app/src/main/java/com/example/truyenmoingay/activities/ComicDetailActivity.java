@@ -55,21 +55,6 @@ public class ComicDetailActivity extends AppCompatActivity {
                 "Đây là mô tả của bộ truyện " + title + ". Nội dung hấp dẫn, nhiều tình tiết bất ngờ."
         );
 
-        btnFavorite = findViewById(R.id.btnFavorite);
-        isFav = db.isFavorite(comicId);
-        updateFavButton();
-
-        btnFavorite.setOnClickListener(v -> {
-            if (isFav) {
-                db.removeFavorite(currentComic.id);
-                Toast.makeText(this, "Đã bỏ yêu thích", Toast.LENGTH_SHORT).show();
-            } else {
-                db.addFavorite(currentComic);
-                Toast.makeText(this, "Đã thêm vào yêu thích ❤️", Toast.LENGTH_SHORT).show();
-            }
-            isFav = !isFav;
-            updateFavButton();
-        });
 
         Button btnRead = findViewById(R.id.btnReadNow);
         btnRead.setOnClickListener(v -> {

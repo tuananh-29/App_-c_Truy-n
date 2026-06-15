@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.truyenmoingay.R;
-import com.example.truyenmoingay.adapters.ReaderPageAdapter;
+import com.example.truyenmoingay.models.adapters.ReaderPageAdapter;
 import com.example.truyenmoingay.models.Comic;
 import com.example.truyenmoingay.utils.ComicDBHelper;
 

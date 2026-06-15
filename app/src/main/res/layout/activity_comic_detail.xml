@@ -13,19 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/bg_surface"
-        app:titleTextColor="@color/text_primary">
-
-        <ImageButton
-            android:id="@+id/btnFavorite"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginEnd="16dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@android:drawable/btn_star_big_off"
-            app:tint="@color/accent_primary" />
-
-    </androidx.appcompat.widget.Toolbar>
+        app:titleTextColor="@color/text_primary"/>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
