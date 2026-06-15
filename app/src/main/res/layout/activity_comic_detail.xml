@@ -4,18 +4,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@android:color/white">
+    android:background="@color/bg_root">
 
     <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="#FF6B35" />
+        android:background="@color/bg_surface"
+        app:titleTextColor="@color/text_primary"
+        xmlns:app="http://schemas.android.com/apk/res-auto" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:clipToPadding="false">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -31,7 +34,7 @@
                 android:text="Tên truyện"
                 android:textSize="22sp"
                 android:textStyle="bold"
-                android:textColor="#111111" />
+                android:textColor="@color/text_primary" />
 
             <!-- Tác giả -->
             <TextView
@@ -41,7 +44,7 @@
                 android:layout_marginTop="4dp"
                 android:text="Tác giả"
                 android:textSize="14sp"
-                android:textColor="#FF6B35" />
+                android:textColor="@color/accent_primary" />
 
             <!-- Mô tả -->
             <TextView
@@ -51,7 +54,7 @@
                 android:layout_marginTop="12dp"
                 android:text="Mô tả truyện..."
                 android:textSize="14sp"
-                android:textColor="#555555"
+                android:textColor="@color/text_secondary"
                 android:lineSpacingMultiplier="1.5" />
 
             <!-- Nút Đọc ngay -->
@@ -60,11 +63,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginTop="16dp"
-                android:backgroundTint="#FF6B35"
+                android:backgroundTint="@color/accent_primary"
                 android:text="▶  Đọc ngay"
-                android:textColor="@android:color/white"
+                android:textColor="@color/text_primary"
                 android:textSize="15sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:textAllCaps="false" />
 
             <!-- Divider -->
             <View
@@ -72,7 +76,7 @@
                 android:layout_height="1dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="12dp"
-                android:background="#EEEEEE" />
+                android:background="@color/divider" />
 
             <!-- Tiêu đề danh sách chương -->
             <TextView
@@ -81,7 +85,7 @@
                 android:text="Danh sách chương"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="#222222"
+                android:textColor="@color/text_primary"
                 android:layout_marginBottom="8dp" />
 
             <!-- Danh sách chương -->

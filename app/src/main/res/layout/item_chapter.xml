@@ -22,7 +22,7 @@
             android:text="Chương 1"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:textColor="#111111" />
+            android:textColor="@color/text_primary" />
 
         <TextView
             android:id="@+id/tvDate"
@@ -31,7 +31,7 @@
             android:layout_marginTop="2dp"
             android:text="01/01/2024"
             android:textSize="12sp"
-            android:textColor="#999999" />
+            android:textColor="@color/text_secondary" />
     </LinearLayout>
 
     <!-- Badge khóa -->
@@ -42,7 +42,7 @@
         android:text="🔒 5 coin"
         android:textSize="12sp"
         android:textStyle="bold"
-        android:textColor="#FF6B35"
+        android:textColor="@color/accent_secondary"
         android:visibility="gone" />
 
 </LinearLayout>

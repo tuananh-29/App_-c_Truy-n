@@ -4,13 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@android:color/white">
+    android:background="@color/bg_root">
 
     <!-- Header -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:background="@color/bg_surface"
         android:padding="16dp">
 
         <TextView
@@ -19,7 +20,7 @@
             android:text="Truyện theo dõi"
             android:textSize="22sp"
             android:textStyle="bold"
-            android:textColor="#222222" />
+            android:textColor="@color/text_primary" />
 
         <TextView
             android:id="@+id/tvFollowCount"
@@ -27,7 +28,7 @@
             android:layout_height="wrap_content"
             android:text="3 truyện đang theo dõi"
             android:textSize="13sp"
-            android:textColor="#888888"
+            android:textColor="@color/text_secondary"
             android:layout_marginTop="2dp" />
     </LinearLayout>
 
@@ -36,9 +37,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:background="@color/bg_surface"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:paddingBottom="12dp">
+        android:paddingBottom="14dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -51,14 +53,14 @@
                 android:layout_height="wrap_content"
                 android:text="📖  Đang đọc  "
                 android:textSize="13sp"
-                android:textColor="#555555" />
+                android:textColor="@color/text_secondary" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="2 truyện"
                 android:textSize="13sp"
                 android:textStyle="bold"
-                android:textColor="#E53935" />
+                android:textColor="@color/accent_primary" />
         </LinearLayout>
 
         <LinearLayout
@@ -71,19 +73,19 @@
                 android:layout_height="wrap_content"
                 android:text="✅  Hoàn thành  "
                 android:textSize="13sp"
-                android:textColor="#555555" />
+                android:textColor="@color/text_secondary" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="1 truyện"
                 android:textSize="13sp"
                 android:textStyle="bold"
-                android:textColor="#4CAF50" />
+                android:textColor="@color/success" />
         </LinearLayout>
     </LinearLayout>
 
     <View android:layout_width="match_parent" android:layout_height="1dp"
-        android:background="#EEEEEE" />
+        android:background="@color/divider" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvFollowing"
@@ -97,7 +99,9 @@
         android:id="@+id/bottomNav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
+        android:background="@color/bg_surface"
+        app:itemIconTint="@color/accent_primary"
+        app:itemTextColor="@color/accent_primary"
         app:menu="@menu/bottom_nav_menu"
         xmlns:app="http://schemas.android.com/apk/res-auto" />
 

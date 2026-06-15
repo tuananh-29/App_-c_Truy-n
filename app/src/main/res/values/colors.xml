@@ -2,4 +2,23 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Dark theme - lấy cảm hứng từ Webtoon / MangaDex -->
+    <color name="bg_root">#0F0F12</color>
+    <color name="bg_surface">#1A1A1F</color>
+    <color name="bg_surface_2">#22222A</color>
+    <color name="bg_elevated">#2A2A33</color>
+    <color name="divider">#2E2E36</color>
+
+    <color name="accent_primary">#FF5C45</color>
+    <color name="accent_primary_dark">#E0492F</color>
+    <color name="accent_secondary">#FFB020</color>
+
+    <color name="text_primary">#F5F5F7</color>
+    <color name="text_secondary">#A0A0AB</color>
+    <color name="text_tertiary">#6E6E78</color>
+
+    <color name="success">#3DDC97</color>
+    <color name="overlay_dark">#CC000000</color>
+    <color name="placeholder_cover">#33333D</color>
 </resources>

@@ -30,6 +30,7 @@
         <activity android:name=".activities.FollowingActivity" />
         <activity android:name=".activities.ExploreActivity" />
         <activity android:name=".activities.ProfileActivity" />
+        <activity android:name=".activities.TopUpActivity" />
 
     </application>
 

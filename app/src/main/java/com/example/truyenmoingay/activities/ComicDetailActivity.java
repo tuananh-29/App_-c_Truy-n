@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -13,16 +14,24 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.truyenmoingay.R;
 import com.example.truyenmoingay.adapters.ChapterAdapter;
 import com.example.truyenmoingay.models.Chapter;
+import com.example.truyenmoingay.utils.WalletManager;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class ComicDetailActivity extends AppCompatActivity {
 
+    private WalletManager wallet;
+    private ChapterAdapter chapterAdapter;
+    private List<Chapter> chapters;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comic_detail);
+
+        wallet = WalletManager.getInstance(this);
 
         // Nhận dữ liệu từ HomeActivity
         String title  = getIntent().getStringExtra("comic_title");
@@ -49,25 +58,67 @@ public class ComicDetailActivity extends AppCompatActivity {
         btnRead.setOnClickListener(v -> openReader(1, "Chương 1: Khởi đầu"));
 
         // Danh sách chương mock
+        chapters = getMockChapters();
+
         RecyclerView rvChapters = findViewById(R.id.rvChapters);
         rvChapters.setLayoutManager(new LinearLayoutManager(this));
-        rvChapters.setAdapter(new ChapterAdapter(getMockChapters(), chapter -> {
-            if (chapter.isLocked) {
-                // Hiện thông báo đơn giản
-                new androidx.appcompat.app.AlertDialog.Builder(this)
-                        .setTitle("Chương bị khóa")
-                        .setMessage("Cần " + chapter.coinCost + " coin để mở chương này.")
-                        .setPositiveButton("OK", null)
-                        .show();
-            } else {
-                openReader(chapter.id, chapter.title);
-            }
-        }));
+        chapterAdapter = new ChapterAdapter(chapters, this::onChapterClick);
+        rvChapters.setAdapter(chapterAdapter);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Cập nhật lại trạng thái khóa/mở khi quay lại màn (vd: sau khi nạp xu)
+        if (chapterAdapter != null) {
+            chapterAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private void onChapterClick(Chapter chapter) {
+        boolean locked = chapter.isLocked && !wallet.isChapterUnlocked(chapter.id);
+
+        if (!locked) {
+            openReader(chapter.id, chapter.title);
+            return;
+        }
+
+        int balance = wallet.getBalance();
+
+        if (wallet.canAfford(chapter.coinCost)) {
+            new androidx.appcompat.app.AlertDialog.Builder(this)
+                    .setTitle("Mở khóa chương")
+                    .setMessage("Dùng " + chapter.coinCost + " xu để mở \"" + chapter.title + "\"?\n\n"
+                            + "Số dư hiện tại: " + balance + " xu")
+                    .setPositiveButton("Mở khóa", (d, w) -> {
+                        boolean success = wallet.unlockChapter(chapter.id, chapter.coinCost);
+                        if (success) {
+                            chapterAdapter.notifyDataSetChanged();
+                            Toast.makeText(this,
+                                    "Đã mở khóa! Còn lại " + wallet.getBalance() + " xu",
+                                    Toast.LENGTH_SHORT).show();
+                            openReader(chapter.id, chapter.title);
+                        } else {
+                            Toast.makeText(this, "Không đủ xu!", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .setNegativeButton("Hủy", null)
+                    .show();
+        } else {
+            new androidx.appcompat.app.AlertDialog.Builder(this)
+                    .setTitle("Không đủ xu")
+                    .setMessage("Chương này cần " + chapter.coinCost + " xu, bạn còn " + balance + " xu.\n\n"
+                            + "Nạp thêm xu để mở khóa chương này?")
+                    .setPositiveButton("Nạp xu", (d, w) ->
+                            startActivity(new Intent(this, TopUpActivity.class)))
+                    .setNegativeButton("Hủy", null)
+                    .show();
+        }
     }
 
     // ── Mock Data ──────────────────────────────────────────
     private List<Chapter> getMockChapters() {
-        return Arrays.asList(
+        return new ArrayList<>(Arrays.asList(
                 new Chapter(1,  "Chương 1: Khởi đầu",        false, 0,  "01/01/2024"),
                 new Chapter(2,  "Chương 2: Cuộc gặp gỡ",     false, 0,  "05/01/2024"),
                 new Chapter(3,  "Chương 3: Bí ẩn hé lộ",     false, 0,  "10/01/2024"),
@@ -76,7 +127,7 @@ public class ComicDetailActivity extends AppCompatActivity {
                 new Chapter(6,  "Chương 6: Sức mạnh mới",    true,  5,  "25/01/2024"),
                 new Chapter(7,  "Chương 7: Đỉnh điểm",       true,  10, "30/01/2024"),
                 new Chapter(8,  "Chương 8: Kết cục bất ngờ", true,  10, "05/02/2024")
-        );
+        ));
     }
 
     private void openReader(int chapterId, String chapterTitle) {

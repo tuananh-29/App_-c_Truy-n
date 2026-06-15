@@ -2,6 +2,7 @@ package com.example.truyenmoingay.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.truyenmoingay.R;
 import com.example.truyenmoingay.adapters.ComicAdapter;
 import com.example.truyenmoingay.models.Comic;
+import com.example.truyenmoingay.utils.WalletManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.Arrays;
@@ -19,10 +21,22 @@ import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
 
+    private TextView tvHeaderCoinBalance;
+    private WalletManager wallet;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        wallet = WalletManager.getInstance(this);
+
+        // Hiển thị số dư xu trên header + mở màn nạp xu khi bấm
+        tvHeaderCoinBalance = findViewById(R.id.tvHeaderCoinBalance);
+        updateCoinBalance();
+        findViewById(R.id.btnCoinBalance).setOnClickListener(v ->
+                startActivity(new Intent(this, TopUpActivity.class))
+        );
 
         List<Comic> mockData = getMockComics();
 
@@ -61,6 +75,16 @@ public class HomeActivity extends AppCompatActivity {
             // Cảnh báo nhỏ hiện lên màn hình để bạn biết XML đang thiếu BottomNav
             Toast.makeText(this, "Chưa tìm thấy bottomNav trong XML!", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateCoinBalance();
+    }
+
+    private void updateCoinBalance() {
+        tvHeaderCoinBalance.setText(String.valueOf(wallet.getBalance()));
     }
 
     private List<Comic> getMockComics() {
