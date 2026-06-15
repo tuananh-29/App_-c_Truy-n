@@ -6,24 +6,52 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.truyenmoingay.R;
+import com.example.truyenmoingay.utils.ComicDBHelper;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    // Đã ẩn WalletManager
+    private ComicDBHelper db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        // Đã ẩn phần nạp xu
+        db = ComicDBHelper.getInstance(this);
 
         findViewById(R.id.btnLogout).setOnClickListener(v ->
                 Toast.makeText(this, "Đã đăng xuất", Toast.LENGTH_SHORT).show()
         );
 
         setupBottomNav();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateStats();
+    }
+
+    private void updateStats() {
+        // LẦN NÀY TỪ 4 BẢNG HOÀN TOÀN TÁCH BIỆT
+        int favCount = db.getAllFavorites().size();     // Bảng Yêu thích
+        int dislikeCount = db.getAllDislikes().size();  // Bảng Không thích
+        int followCount = db.getAllFollows().size();    // Bảng Theo dõi
+        int historyCount = db.getAllHistory().size();   // Bảng Lịch sử
+
+        // Cập nhật Thư viện
+        TextView tvFavCount = findViewById(R.id.tvFavCount);
+        TextView tvDislikeCount = findViewById(R.id.tvDislikeCount);
+        TextView tvFollowCountProfile = findViewById(R.id.tvFollowCountProfile);
+        TextView tvHistoryCount = findViewById(R.id.tvHistoryCount);
+        TextView tvFollowCountTop = findViewById(R.id.tvFollowCountTop);
+
+        tvFavCount.setText(String.valueOf(favCount));
+        tvDislikeCount.setText(String.valueOf(dislikeCount));
+        tvFollowCountProfile.setText(String.valueOf(followCount));
+        tvFollowCountTop.setText(String.valueOf(followCount)); // Hàng ngang phía trên cũng là Theo dõi
+        tvHistoryCount.setText(String.valueOf(historyCount));
     }
 
     private void setupBottomNav() {
@@ -41,6 +69,10 @@ public class ProfileActivity extends AppCompatActivity {
                 startActivity(new Intent(this, ExploreActivity.class)); finish(); return true;
             }
             return true;
+        });
+
+        findViewById(R.id.layoutHistory).setOnClickListener(v -> {
+            startActivity(new Intent(this, HistoryActivity.class));
         });
     }
 }

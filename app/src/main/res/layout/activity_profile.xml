@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -15,7 +16,6 @@
         android:padding="16dp"
         android:gravity="center_vertical">
 
-        <!-- Avatar -->
         <TextView
             android:layout_width="64dp"
             android:layout_height="64dp"
@@ -96,11 +96,14 @@
         android:orientation="horizontal"
         android:background="@color/bg_surface">
 
+        <!-- SỐ THEO DÕI (SỬA LẠI LẤY TỪ LỊCH SỬ ĐỌC) -->
         <LinearLayout android:layout_width="0dp" android:layout_height="64dp"
             android:layout_weight="1" android:orientation="vertical"
             android:gravity="center" android:background="@color/bg_surface">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="24" android:textSize="18sp" android:textStyle="bold"
+            <TextView
+                android:id="@+id/tvFollowCountTop"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="0" android:textSize="18sp" android:textStyle="bold"
                 android:textColor="@color/text_primary" />
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:text="Theo dõi" android:textSize="11sp" android:textColor="@color/text_secondary" />
@@ -110,11 +113,15 @@
             android:layout_gravity="center_vertical"
             android:background="@color/divider" />
 
+        <!-- SỐ ĐÃ ĐỌC -->
         <LinearLayout android:layout_width="0dp" android:layout_height="64dp"
             android:layout_weight="1" android:orientation="vertical"
-            android:gravity="center" android:background="@color/bg_surface">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="158" android:textSize="18sp" android:textStyle="bold"
+            android:gravity="center" android:background="@color/bg_surface"
+            android:id="@+id/layoutHistory">
+            <TextView
+                android:id="@+id/tvHistoryCount"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="0" android:textSize="18sp" android:textStyle="bold"
                 android:textColor="@color/accent_primary" />
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:text="Đã đọc" android:textSize="11sp" android:textColor="@color/text_secondary" />
@@ -152,6 +159,7 @@
             android:padding="12dp">
 
             <!-- THƯ VIỆN -->
+            <!-- THƯ VIỆN -->
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:text="THƯ VIỆN"
                 android:textSize="11sp" android:textStyle="bold"
@@ -162,7 +170,6 @@
                 android:layout_marginBottom="6dp" />
 
             <androidx.cardview.widget.CardView
-                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -172,27 +179,8 @@
                 <LinearLayout android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
-                    <!-- Truyện theo dõi -->
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
-                        android:orientation="horizontal" android:gravity="center_vertical"
-                        android:paddingStart="16dp" android:paddingEnd="16dp"
-                        android:background="?attr/selectableItemBackground">
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="📚  " android:textSize="18sp" />
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Truyện theo dõi" android:textSize="15sp"
-                            android:textColor="@color/text_primary" />
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="24" android:textSize="12sp"
-                            android:textColor="@color/text_primary"
-                            android:background="@drawable/bg_pill"
-                            android:paddingStart="9dp" android:paddingEnd="9dp"
-                            android:paddingTop="3dp" android:paddingBottom="3dp" />
-                    </LinearLayout>
-                    <View android:layout_width="match_parent" android:layout_height="0.5dp"
-                        android:background="@color/divider" />
-                    <!-- Yêu thích -->
+
+                    <!-- Đã thích -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
                         android:orientation="horizontal" android:gravity="center_vertical"
                         android:paddingStart="16dp" android:paddingEnd="16dp"
@@ -201,10 +189,56 @@
                             android:text="❤️  " android:textSize="18sp" />
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Yêu thích" android:textSize="15sp"
+                            android:text="Truyện đã thích" android:textSize="15sp"
                             android:textColor="@color/text_primary" />
+                        <TextView
+                            android:id="@+id/tvFavCount"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="0" android:textSize="12sp"
+                            android:textColor="@color/text_primary"
+                            android:background="@drawable/bg_pill"
+                            android:paddingStart="9dp" android:paddingEnd="9dp"
+                            android:paddingTop="3dp" android:paddingBottom="3dp" />
+                    </LinearLayout>
+                    <View android:layout_width="match_parent" android:layout_height="0.5dp" android:background="@color/divider" />
+
+                    <!-- Không thích -->
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+                        android:orientation="horizontal" android:gravity="center_vertical"
+                        android:paddingStart="16dp" android:paddingEnd="16dp"
+                        android:background="?attr/selectableItemBackground">
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="15" android:textSize="12sp"
+                            android:text="👎  " android:textSize="18sp" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Truyện không thích" android:textSize="15sp"
+                            android:textColor="@color/text_primary" />
+                        <TextView
+                            android:id="@+id/tvDislikeCount"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="0" android:textSize="12sp"
+                            android:textColor="@color/text_primary"
+                            android:background="@drawable/bg_pill"
+                            android:paddingStart="9dp" android:paddingEnd="9dp"
+                            android:paddingTop="3dp" android:paddingBottom="3dp" />
+                    </LinearLayout>
+                    <View android:layout_width="match_parent" android:layout_height="0.5dp" android:background="@color/divider" />
+
+                    <!-- Theo dõi -->
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="52dp"
+                        android:orientation="horizontal" android:gravity="center_vertical"
+                        android:paddingStart="16dp" android:paddingEnd="16dp"
+                        android:background="?attr/selectableItemBackground">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="🔔  " android:textSize="18sp" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Truyện theo dõi" android:textSize="15sp"
+                            android:textColor="@color/text_primary" />
+                        <TextView
+                            android:id="@+id/tvFollowCountProfile"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="0" android:textSize="12sp"
                             android:textColor="@color/text_primary"
                             android:background="@drawable/bg_pill"
                             android:paddingStart="9dp" android:paddingEnd="9dp"
@@ -212,7 +246,6 @@
                     </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
-
             <!-- CÀI ĐẶT -->
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:text="CÀI ĐẶT"
@@ -224,7 +257,6 @@
                 android:layout_marginBottom="6dp" />
 
             <androidx.cardview.widget.CardView
-                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -297,7 +329,6 @@
         android:background="@color/bg_surface"
         app:itemIconTint="@color/accent_primary"
         app:itemTextColor="@color/accent_primary"
-        app:menu="@menu/bottom_nav_menu"
-        xmlns:app="http://schemas.android.com/apk/res-auto" />
+        app:menu="@menu/bottom_nav_menu" />
 
 </LinearLayout>

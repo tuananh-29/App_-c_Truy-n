@@ -116,8 +116,14 @@ public class ComicDetailActivity extends AppCompatActivity {
 
     private void openReader(int chapterId, String chapterTitle) {
         Intent intent = new Intent(this, ReaderActivity.class);
-        intent.putExtra("chapter_id",    chapterId);
+        intent.putExtra("chapter_id", chapterId);
         intent.putExtra("chapter_title", chapterTitle);
+        // Truyền thông tin truyện sang để Reader lưu Database
+        intent.putExtra("comic_id", currentComic.id);
+        intent.putExtra("comic_title", currentComic.title);
+        intent.putExtra("comic_author", currentComic.author);
+        intent.putExtra("comic_chapter_count", currentComic.chapterCount);
+        intent.putExtra("comic_rating", currentComic.rating);
         startActivity(intent);
     }
 }
