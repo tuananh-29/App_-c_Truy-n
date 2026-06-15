@@ -4,35 +4,30 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.truyenmoingay.R;
-import com.example.truyenmoingay.adapters.ComicAdapter;
+import com.example.truyenmoingay.models.adapters.ComicAdapter; // SỬA LẠI ĐƯỜNG DẪN NÀY
 import com.example.truyenmoingay.models.Comic;
-import com.example.truyenmoingay.utils.WalletManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import java.util.Arrays;
 import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private TextView tvHeaderCoinBalance;
-    private WalletManager wallet;
+    // Đã ẩn WalletManager vì chưa có
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        wallet = WalletManager.getInstance(this);
-
-        tvHeaderCoinBalance = findViewById(R.id.tvHeaderCoinBalance);
-        updateCoinBalance();
-        findViewById(R.id.btnCoinBalance).setOnClickListener(v ->
-                startActivity(new Intent(this, TopUpActivity.class))
-        );
+        // Đã ẩn phần nạp xu
 
         List<Comic> mockData = getMockComics();
 
@@ -69,16 +64,6 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        updateCoinBalance();
-    }
-
-    private void updateCoinBalance() {
-        tvHeaderCoinBalance.setText(String.valueOf(wallet.getBalance()));
-    }
-
     private List<Comic> getMockComics() {
         return Arrays.asList(
                 new Comic(1, "One Piece",          "Oda Eiichiro",   1100, 4.9f),
@@ -95,8 +80,8 @@ public class HomeActivity extends AppCompatActivity {
         intent.putExtra("comic_id",     comic.id);
         intent.putExtra("comic_title",  comic.title);
         intent.putExtra("comic_author", comic.author);
-        intent.putExtra("comic_chapter_count", comic.chapterCount); // Thêm dòng này
-        intent.putExtra("comic_rating", comic.rating);             // Thêm dòng này
+        intent.putExtra("comic_chapter_count", comic.chapterCount);
+        intent.putExtra("comic_rating", comic.rating);
         startActivity(intent);
     }
 }

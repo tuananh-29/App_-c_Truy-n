@@ -6,15 +6,18 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.truyenmoingay.R;
-import com.example.truyenmoingay.adapters.ChapterAdapter;
+import com.example.truyenmoingay.models.adapters.ChapterAdapter; // SỬA LẠI ĐƯỜNG DẪN NÀY
 import com.example.truyenmoingay.models.Chapter;
 import com.example.truyenmoingay.models.Comic;
 import com.example.truyenmoingay.utils.ComicDBHelper;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,7 +35,6 @@ public class ComicDetailActivity extends AppCompatActivity {
 
         db = ComicDBHelper.getInstance(this);
 
-        // Nhận dữ liệu Comic từ Intent
         int comicId = getIntent().getIntExtra("comic_id", 0);
         String title = getIntent().getStringExtra("comic_title");
         String author = getIntent().getStringExtra("comic_author");
@@ -41,21 +43,18 @@ public class ComicDetailActivity extends AppCompatActivity {
 
         currentComic = new Comic(comicId, title, author, chapterCount, rating);
 
-        // Toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(title);
         toolbar.setNavigationOnClickListener(v -> finish());
 
-        // Hiển thị thông tin
         ((TextView) findViewById(R.id.tvTitle)).setText(title);
         ((TextView) findViewById(R.id.tvAuthor)).setText("Tác giả: " + author);
         ((TextView) findViewById(R.id.tvDescription)).setText(
                 "Đây là mô tả của bộ truyện " + title + ". Nội dung hấp dẫn, nhiều tình tiết bất ngờ."
         );
 
-        // XỬ LÝ NÚT YÊU THÍCH
         btnFavorite = findViewById(R.id.btnFavorite);
         isFav = db.isFavorite(comicId);
         updateFavButton();
@@ -72,14 +71,12 @@ public class ComicDetailActivity extends AppCompatActivity {
             updateFavButton();
         });
 
-        // Nút Đọc ngay & LƯU LỊCH SỬ
         Button btnRead = findViewById(R.id.btnReadNow);
         btnRead.setOnClickListener(v -> {
             db.addOrUpdateHistory(currentComic);
             openReader(1, "Chương 1: Khởi đầu");
         });
 
-        // Danh sách chương mock
         RecyclerView rvChapters = findViewById(R.id.rvChapters);
         rvChapters.setLayoutManager(new LinearLayoutManager(this));
         rvChapters.setAdapter(new ChapterAdapter(getMockChapters(), chapter -> {

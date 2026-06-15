@@ -2,7 +2,6 @@ package com.example.truyenmoingay.activities;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -11,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.truyenmoingay.R;
-import com.example.truyenmoingay.adapters.ReaderPageAdapter;
+import com.example.truyenmoingay.models.adapters.ReaderPageAdapter; // SỬA LẠI ĐƯỜNG DẪN NÀY
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,21 +26,15 @@ public class ReaderActivity extends AppCompatActivity {
 
         String chapterTitle = getIntent().getStringExtra("chapter_title");
 
-        // Gán tiêu đề
         ((TextView) findViewById(R.id.tvChapterTitle)).setText(chapterTitle);
-
-        // Nút back
         findViewById(R.id.btnBack).setOnClickListener(v -> finish());
 
-        // Tap vào nội dung → ẩn/hiện thanh trên/dưới
         RecyclerView rvPages = findViewById(R.id.rvPages);
         rvPages.setOnClickListener(v -> toggleBars());
 
-        // Load ảnh mock (dùng URL placeholder công khai)
         rvPages.setLayoutManager(new LinearLayoutManager(this));
         rvPages.setAdapter(new ReaderPageAdapter(getMockPages()));
 
-        // Nút chuyển chương
         findViewById(R.id.btnPrev).setOnClickListener(v ->
                 Toast.makeText(this, "Đây là chương đầu tiên", Toast.LENGTH_SHORT).show()
         );
@@ -50,7 +43,6 @@ public class ReaderActivity extends AppCompatActivity {
         );
     }
 
-    // ── Mock Data: URL ảnh placeholder để xem layout ──────
     private List<String> getMockPages() {
         return Arrays.asList(
                 "https://picsum.photos/seed/p1/400/600",
