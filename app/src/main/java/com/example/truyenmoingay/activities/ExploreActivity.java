@@ -20,13 +20,7 @@ public class ExploreActivity extends AppCompatActivity {
 
         RecyclerView rv = findViewById(R.id.rvRanking);
         rv.setLayoutManager(new LinearLayoutManager(this));
-        rv.setAdapter(new ComicAdapter(getMockRanking(), comic -> {
-            Intent i = new Intent(this, ComicDetailActivity.class);
-            i.putExtra("comic_id", comic.id);
-            i.putExtra("comic_title", comic.title);
-            i.putExtra("comic_author", comic.author);
-            startActivity(i);
-        }));
+        rv.setAdapter(new ComicAdapter(getMockRanking(), this::openDetail));
 
         setupBottomNav();
     }
@@ -37,6 +31,16 @@ public class ExploreActivity extends AppCompatActivity {
                 new Comic(2, "Võ Lâm Tranh Bá",    "Hoàng Văn E", 310, 4.7f),
                 new Comic(3, "Hành Trình Tu Tiên", "Nguyễn Văn A",230, 4.8f)
         );
+    }
+
+    private void openDetail(Comic comic) {
+        Intent i = new Intent(this, ComicDetailActivity.class);
+        i.putExtra("comic_id", comic.id);
+        i.putExtra("comic_title", comic.title);
+        i.putExtra("comic_author", comic.author);
+        i.putExtra("comic_chapter_count", comic.chapterCount); // Thêm dòng này
+        i.putExtra("comic_rating", comic.rating);             // Thêm dòng này
+        startActivity(i);
     }
 
     private void setupBottomNav() {
