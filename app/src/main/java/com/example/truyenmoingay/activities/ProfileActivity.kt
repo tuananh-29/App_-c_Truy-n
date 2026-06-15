@@ -1,65 +1,112 @@
-package com.example.truyenmoingay.activities;
+package com.example.truyenmoingay.activities
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.widget.TextView;
-import android.widget.Toast;
-import androidx.appcompat.app.AppCompatActivity;
-import com.example.truyenmoingay.R;
-import com.example.truyenmoingay.utils.WalletManager;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import android.content.Intent
+import android.os.Bundle
+import android.view.View
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import com.example.truyenmoingay.R
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
-public class ProfileActivity extends AppCompatActivity {
+class ProfileActivity : AppCompatActivity() {
 
-    private TextView tvCoinBalance;
-    private WalletManager wallet;
+    private var tvCoinBalance: TextView? = null
+    private var wallet: WalletManager? = null
+    private lateinit var prefManager: SharedPrefManager
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        // ✅ BƯỚC 1: Khởi tạo prefManager
+        prefManager = SharedPrefManager(this)
 
-        wallet = WalletManager.getInstance(this);
+        // ✅ BƯỚC 2: Áp dụng Dark Mode TRƯỚC super.onCreate
+        if (prefManager.getDarkModeStatus()) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        }
 
-        tvCoinBalance = findViewById(R.id.tvCoinBalance);
-        updateCoinBalance();
+        // ✅ BƯỚC 3: Gọi super và setContentView
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_profile)
 
-        findViewById(R.id.btnTopUp).setOnClickListener(v ->
-                startActivity(new Intent(this, TopUpActivity.class))
-        );
+        // ✅ BƯỚC 4: Khởi tạo các view
+        wallet = WalletManager.getInstance(this)
+        tvCoinBalance = findViewById(R.id.tvCoinBalance)
+        updateCoinBalance()
 
-        findViewById(R.id.btnLogout).setOnClickListener(v ->
-                Toast.makeText(this, "Đã đăng xuất", Toast.LENGTH_SHORT).show()
-        );
+        // Nút nạp xu
+        findViewById<View>(R.id.btnTopUp).setOnClickListener {
+            startActivity(Intent(this, TopUpActivity::class.java))
+        }
 
-        setupBottomNav();
-    }
+        // Nút đăng xuất
+        findViewById<View>(R.id.btnLogout).setOnClickListener {
+            Toast.makeText(this, "Đã đăng xuất", Toast.LENGTH_SHORT).show()
+        }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        updateCoinBalance();
-    }
+        // ✅ BƯỚC 5: Toggle Dark Mode - thêm recreate() để reload giao diện
+        findViewById<View>(R.id.tvGiaoDienClick).setOnClickListener {
+            val newDarkModeState = !prefManager.getDarkModeStatus()
 
-    private void updateCoinBalance() {
-        tvCoinBalance.setText(wallet.getBalance() + " xu");
-    }
+            // Lưu trạng thái mới
+            prefManager.saveDarkModeStatus(newDarkModeState)
 
-    private void setupBottomNav() {
-        BottomNavigationView nav = findViewById(R.id.bottomNav);
-        nav.setSelectedItemId(R.id.nav_profile);
-        nav.setOnItemSelectedListener(item -> {
-            int id = item.getItemId();
-            if (id == R.id.nav_home) {
-                startActivity(new Intent(this, HomeActivity.class)); finish(); return true;
-            } else if (id == R.id.nav_hashtag) {
-                startActivity(new Intent(this, HashtagActivity.class)); finish(); return true;
-            } else if (id == R.id.nav_following) {
-                startActivity(new Intent(this, FollowingActivity.class)); finish(); return true;
-            } else if (id == R.id.nav_explore) {
-                startActivity(new Intent(this, ExploreActivity.class)); finish(); return true;
+            // Áp dụng theme mới
+            if (newDarkModeState) {
+                Toast.makeText(this, "Đã BẬT Giao diện tối (Dark Mode)!", Toast.LENGTH_SHORT).show()
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                Toast.makeText(this, "Đã TẮT Giao diện tối, chuyển về chế độ Sáng!", Toast.LENGTH_SHORT).show()
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
-            return true;
-        });
+
+            // ✅ QUAN TRỌNG: Reload Activity để giao diện thay đổi ngay lập tức
+            recreate()
+        }
+
+        setupBottomNav()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateCoinBalance()
+    }
+
+    private fun updateCoinBalance() {
+        if (wallet != null && tvCoinBalance != null) {
+            tvCoinBalance!!.text = "${wallet!!.balance} xu"
+        }
+    }
+
+    private fun setupBottomNav() {
+        val nav = findViewById<BottomNavigationView>(R.id.bottomNav)
+        nav.selectedItemId = R.id.nav_profile
+        nav.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_home -> {
+                    startActivity(Intent(this, HomeActivity::class.java))
+                    finish()
+                    true
+                }
+                R.id.nav_hashtag -> {
+                    startActivity(Intent(this, HashtagActivity::class.java))
+                    finish()
+                    true
+                }
+                R.id.nav_following -> {
+                    startActivity(Intent(this, FollowingActivity::class.java))
+                    finish()
+                    true
+                }
+                R.id.nav_explore -> {
+                    startActivity(Intent(this, ExploreActivity::class.java))
+                    finish()
+                    true
+                }
+                else -> true
+            }
+        }
     }
 }
