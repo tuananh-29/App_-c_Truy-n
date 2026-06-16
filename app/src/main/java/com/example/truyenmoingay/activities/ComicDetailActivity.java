@@ -52,15 +52,15 @@ public class ComicDetailActivity extends AppCompatActivity {
         RecyclerView rvChapters = findViewById(R.id.rvChapters);
         rvChapters.setLayoutManager(new LinearLayoutManager(this));
         rvChapters.setAdapter(new ChapterAdapter(getMockChapters(), chapter -> {
-            if (chapter.isLocked) {
+            if (chapter.isLocked()) {
                 // Hiện thông báo đơn giản
                 new androidx.appcompat.app.AlertDialog.Builder(this)
                         .setTitle("Chương bị khóa")
-                        .setMessage("Cần " + chapter.coinCost + " coin để mở chương này.")
+                        .setMessage("Cần " + chapter.getCoinCost() + " coin để mở chương này.")
                         .setPositiveButton("OK", null)
                         .show();
             } else {
-                openReader(chapter.id, chapter.title);
+                openReader(chapter.getId(), chapter.getTitle());
             }
         }));
     }
