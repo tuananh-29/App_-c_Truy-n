@@ -3,7 +3,6 @@ package com.example.truyenmoingay.activities
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -32,34 +31,16 @@ class ProfileActivity : AppCompatActivity() {
         wallet = WalletManager.getInstance(this)
         tvCoinBalance = findViewById(R.id.tvCoinBalance)
 
-        val btnLogin = findViewById<Button>(R.id.btnLogin)
-        val btnLogout = findViewById<Button>(R.id.btnLogout)
-        val layoutLoggedIn = findViewById<View>(R.id.layoutLoggedIn)   // nhóm view chỉ hiện khi đã login
-
-        // Hiển thị UI theo trạng thái đăng nhập
-        if (prefManager.getLoginStatus()) {
-            // Đã đăng nhập
-            layoutLoggedIn?.visibility = View.VISIBLE
-            btnLogin?.visibility = View.GONE
-            btnLogout?.visibility = View.VISIBLE
-            updateCoinBalance()
-        } else {
-            // Chưa đăng nhập
-            layoutLoggedIn?.visibility = View.GONE
-            btnLogin?.visibility = View.VISIBLE
-            btnLogout?.visibility = View.GONE
-        }
-
-        // Nút Đăng nhập → mở LoginActivity
-        btnLogin?.setOnClickListener {
+        // Nút đăng nhập
+        findViewById<View>(R.id.btnLogin).setOnClickListener {
             startActivity(Intent(this, LoginActivity::class.java))
         }
 
-        // Nút Đăng xuất
-        btnLogout?.setOnClickListener {
+        // Nút đăng xuất
+        findViewById<View>(R.id.btnLogout).setOnClickListener {
             prefManager.saveLoginStatus(false)
             Toast.makeText(this, "Đã đăng xuất", Toast.LENGTH_SHORT).show()
-            recreate() // reload lại màn hình profile
+            updateUI()
         }
 
         // Nút nạp xu
@@ -68,7 +49,7 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         // Toggle Dark Mode
-        findViewById<View>(R.id.tvGiaoDienClick)?.setOnClickListener {
+        findViewById<View>(R.id.tvGiaoDienClick).setOnClickListener {
             val newState = !prefManager.getDarkModeStatus()
             prefManager.saveDarkModeStatus(newState)
             if (newState) {
@@ -86,8 +67,24 @@ class ProfileActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        // Khi quay lại từ LoginActivity, reload lại UI
-        recreate()
+        updateUI() // ✅ Không dùng recreate() nữa
+    }
+
+    private fun updateUI() {
+        val btnLogin = findViewById<View>(R.id.btnLogin)
+        val btnLogout = findViewById<View>(R.id.btnLogout)
+        val layoutLoggedIn = findViewById<View>(R.id.layoutLoggedIn)
+
+        if (prefManager.getLoginStatus()) {
+            layoutLoggedIn?.visibility = View.VISIBLE
+            btnLogin?.visibility = View.GONE
+            btnLogout?.visibility = View.VISIBLE
+            updateCoinBalance()
+        } else {
+            layoutLoggedIn?.visibility = View.GONE
+            btnLogin?.visibility = View.VISIBLE
+            btnLogout?.visibility = View.GONE
+        }
     }
 
     private fun updateCoinBalance() {
