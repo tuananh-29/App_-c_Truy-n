@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_root">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <Button
+                android:id="@+id/btnBack"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:text="←"
+                android:textColor="@color/text_primary"
+                android:textSize="20sp"
+                android:backgroundTint="@android:color/transparent"
+                android:padding="0dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nạp xu"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvBalance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Số dư: 0 coin"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="@color/accent_secondary"
+            android:gravity="center" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="12dp"
+            android:text="Chọn gói nạp"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary" />
+
+        <Button
+            android:id="@+id/btn50"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginBottom="10dp"
+            android:text="50 coin"
+            android:textAllCaps="false"
+            android:textColor="@color/text_primary"
+            android:backgroundTint="@color/bg_elevated" />
+
+        <Button
+            android:id="@+id/btn100"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginBottom="10dp"
+            android:text="100 coin"
+            android:textAllCaps="false"
+            android:textColor="@color/text_primary"
+            android:backgroundTint="@color/bg_elevated" />
+
+        <Button
+            android:id="@+id/btn200"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginBottom="10dp"
+            android:text="200 coin"
+            android:textAllCaps="false"
+            android:textColor="@color/text_primary"
+            android:backgroundTint="@color/accent_primary" />
+
+        <Button
+            android:id="@+id/btn500"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="500 coin"
+            android:textAllCaps="false"
+            android:textColor="@color/text_primary"
+            android:backgroundTint="@color/accent_primary" />
+
+    </LinearLayout>
+</ScrollView>

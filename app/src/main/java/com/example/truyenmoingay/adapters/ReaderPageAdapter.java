@@ -1,4 +1,4 @@
-package com.example.truyenmoingay.models.adapters;
+package com.example.truyenmoingay.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
