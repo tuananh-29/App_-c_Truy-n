@@ -17,15 +17,17 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var prefManager: SharedPrefManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)           // ✅ PHẢI LÊN ĐẦU TIÊN
+
         prefManager = SharedPrefManager(this)
 
+        // Apply dark mode
         if (prefManager.getDarkModeStatus()) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         }
 
-        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
 
         wallet = WalletManager.getInstance(this)
@@ -62,12 +64,13 @@ class ProfileActivity : AppCompatActivity() {
             recreate()
         }
 
+        updateUI()
         setupBottomNav()
     }
 
     override fun onResume() {
         super.onResume()
-        updateUI() // ✅ Không dùng recreate() nữa
+        updateUI()
     }
 
     private fun updateUI() {
@@ -98,10 +101,26 @@ class ProfileActivity : AppCompatActivity() {
         nav.selectedItemId = R.id.nav_profile
         nav.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.nav_home -> { startActivity(Intent(this, HomeActivity::class.java)); finish(); true }
-                R.id.nav_hashtag -> { startActivity(Intent(this, HashtagActivity::class.java)); finish(); true }
-                R.id.nav_following -> { startActivity(Intent(this, FollowingActivity::class.java)); finish(); true }
-                R.id.nav_explore -> { startActivity(Intent(this, ExploreActivity::class.java)); finish(); true }
+                R.id.nav_home -> {
+                    startActivity(Intent(this, HomeActivity::class.java))
+                    finish()
+                    true
+                }
+                R.id.nav_hashtag -> {
+                    startActivity(Intent(this, HashtagActivity::class.java))
+                    finish()
+                    true
+                }
+                R.id.nav_following -> {
+                    startActivity(Intent(this, FollowingActivity::class.java))
+                    finish()
+                    true
+                }
+                R.id.nav_explore -> {
+                    startActivity(Intent(this, ExploreActivity::class.java))
+                    finish()
+                    true
+                }
                 else -> true
             }
         }
