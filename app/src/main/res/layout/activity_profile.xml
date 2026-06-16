@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/bg_root">
 
+    <!-- ===== HEADER: Avatar + tên + email ===== -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -43,93 +45,130 @@
         </LinearLayout>
     </LinearLayout>
 
+    <!-- ===== NÚT ĐĂNG NHẬP (hiện khi chưa login) ===== -->
     <LinearLayout
-        android:id="@+id/cardCoinBalance"
+        android:id="@+id/btnLogin"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="52dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:background="@color/bg_surface"
         android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="14dp">
-
+        android:background="@color/bg_surface"
+        android:visibility="gone">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="🪙"
-            android:textSize="20sp" />
-
+            android:text="🔑  "
+            android:textSize="18sp" />
         <TextView
-            android:id="@+id/tvCoinBalance"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="8dp"
-            android:text="50 xu"
-            android:textColor="@color/accent_secondary"
+            android:text="Đăng nhập / Đăng ký"
             android:textSize="15sp"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/btnTopUp"
-            android:layout_width="wrap_content"
-            android:layout_height="36dp"
-            android:background="@drawable/bg_pill"
-            android:backgroundTint="@color/accent_primary"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:text="+ Nạp xu"
-            android:textAllCaps="false"
-            android:textColor="@color/text_primary"
-            android:textSize="13sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textColor="@color/accent_primary" />
     </LinearLayout>
 
+    <!-- ===== NHÓM CHỈ HIỆN KHI ĐÃ ĐĂNG NHẬP ===== -->
     <LinearLayout
+        android:id="@+id/layoutLoggedIn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="@color/bg_surface">
+        android:orientation="vertical"
+        android:visibility="gone">
 
-        <LinearLayout android:layout_width="0dp" android:layout_height="64dp"
-            android:layout_weight="1" android:orientation="vertical"
-            android:gravity="center" android:background="@color/bg_surface">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="24" android:textSize="18sp" android:textStyle="bold"
-                android:textColor="@color/text_primary" />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Theo dõi" android:textSize="11sp" android:textColor="@color/text_secondary" />
+        <!-- Số xu -->
+        <LinearLayout
+            android:id="@+id/cardCoinBalance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@color/bg_surface"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="14dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🪙"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/tvCoinBalance"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:text="50 xu"
+                android:textColor="@color/accent_secondary"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btnTopUp"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:background="@drawable/bg_pill"
+                android:backgroundTint="@color/accent_primary"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:text="+ Nạp xu"
+                android:textAllCaps="false"
+                android:textColor="@color/text_primary"
+                android:textSize="13sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
-        <View android:layout_width="1dp" android:layout_height="32dp"
-            android:layout_gravity="center_vertical"
-            android:background="@color/divider" />
+        <!-- Thống kê: Theo dõi / Đã đọc / Đã tải -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/bg_surface">
 
-        <LinearLayout android:layout_width="0dp" android:layout_height="64dp"
-            android:layout_weight="1" android:orientation="vertical"
-            android:gravity="center" android:background="@color/bg_surface">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="158" android:textSize="18sp" android:textStyle="bold"
-                android:textColor="@color/accent_primary" />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Đã đọc" android:textSize="11sp" android:textColor="@color/text_secondary" />
+            <LinearLayout android:layout_width="0dp" android:layout_height="64dp"
+                android:layout_weight="1" android:orientation="vertical"
+                android:gravity="center" android:background="@color/bg_surface">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="24" android:textSize="18sp" android:textStyle="bold"
+                    android:textColor="@color/text_primary" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Theo dõi" android:textSize="11sp" android:textColor="@color/text_secondary" />
+            </LinearLayout>
+
+            <View android:layout_width="1dp" android:layout_height="32dp"
+                android:layout_gravity="center_vertical"
+                android:background="@color/divider" />
+
+            <LinearLayout android:layout_width="0dp" android:layout_height="64dp"
+                android:layout_weight="1" android:orientation="vertical"
+                android:gravity="center" android:background="@color/bg_surface">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="158" android:textSize="18sp" android:textStyle="bold"
+                    android:textColor="@color/accent_primary" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Đã đọc" android:textSize="11sp" android:textColor="@color/text_secondary" />
+            </LinearLayout>
+
+            <View android:layout_width="1dp" android:layout_height="32dp"
+                android:layout_gravity="center_vertical"
+                android:background="@color/divider" />
+
+            <LinearLayout android:layout_width="0dp" android:layout_height="64dp"
+                android:layout_weight="1" android:orientation="vertical"
+                android:gravity="center" android:background="@color/bg_surface">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="12" android:textSize="18sp" android:textStyle="bold"
+                    android:textColor="@color/text_primary" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Đã tải" android:textSize="11sp" android:textColor="@color/text_secondary" />
+            </LinearLayout>
         </LinearLayout>
 
-        <View android:layout_width="1dp" android:layout_height="32dp"
-            android:layout_gravity="center_vertical"
-            android:background="@color/divider" />
-
-        <LinearLayout android:layout_width="0dp" android:layout_height="64dp"
-            android:layout_weight="1" android:orientation="vertical"
-            android:gravity="center" android:background="@color/bg_surface">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="12" android:textSize="18sp" android:textStyle="bold"
-                android:textColor="@color/text_primary" />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Đã tải" android:textSize="11sp" android:textColor="@color/text_secondary" />
-        </LinearLayout>
     </LinearLayout>
+    <!-- ===== KẾT THÚC layoutLoggedIn ===== -->
 
     <View android:layout_width="match_parent" android:layout_height="1dp"
         android:background="@color/divider" />
@@ -156,7 +195,6 @@
                 android:layout_marginBottom="6dp" />
 
             <androidx.cardview.widget.CardView
-                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -215,7 +253,6 @@
                 android:layout_marginBottom="6dp" />
 
             <androidx.cardview.widget.CardView
-                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -253,24 +290,19 @@
                         android:background="?attr/selectableItemBackground"
                         android:clickable="true"
                         android:focusable="true">
-
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:text="🌙  " android:textSize="18sp" />
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Giao diện"
-                            android:textSize="15sp"
+                            android:text="Giao diện" android:textSize="15sp"
                             android:textColor="@color/text_primary" />
-
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:text="Tối  ›" android:textSize="13sp" android:textColor="@color/text_tertiary" />
                     </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
+            <!-- Đăng xuất (hiện khi đã login) -->
             <LinearLayout
                 android:id="@+id/btnLogout"
                 android:layout_width="match_parent"
@@ -279,7 +311,8 @@
                 android:gravity="center_vertical"
                 android:paddingStart="16dp"
                 android:background="@drawable/bg_card"
-                android:layout_marginTop="8dp">
+                android:layout_marginTop="8dp"
+                android:visibility="gone">
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:text="🚪  " android:textSize="18sp" />
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -299,7 +332,6 @@
         android:background="@color/bg_surface"
         app:itemIconTint="@color/accent_primary"
         app:itemTextColor="@color/accent_primary"
-        app:menu="@menu/bottom_nav_menu"
-        xmlns:app="http://schemas.android.com/apk/res-auto" />
+        app:menu="@menu/bottom_nav_menu" />
 
 </LinearLayout>

@@ -17,61 +17,77 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var prefManager: SharedPrefManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // ✅ BƯỚC 1: Khởi tạo prefManager
+        super.onCreate(savedInstanceState)           // ✅ PHẢI LÊN ĐẦU TIÊN
+
         prefManager = SharedPrefManager(this)
 
-        // ✅ BƯỚC 2: Áp dụng Dark Mode TRƯỚC super.onCreate
+        // Apply dark mode
         if (prefManager.getDarkModeStatus()) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         }
 
-        // ✅ BƯỚC 3: Gọi super và setContentView
-        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
 
-        // ✅ BƯỚC 4: Khởi tạo các view
         wallet = WalletManager.getInstance(this)
         tvCoinBalance = findViewById(R.id.tvCoinBalance)
-        updateCoinBalance()
 
-        // Nút nạp xu
-        findViewById<View>(R.id.btnTopUp).setOnClickListener {
-            startActivity(Intent(this, TopUpActivity::class.java))
+        // Nút đăng nhập
+        findViewById<View>(R.id.btnLogin).setOnClickListener {
+            startActivity(Intent(this, LoginActivity::class.java))
         }
 
         // Nút đăng xuất
         findViewById<View>(R.id.btnLogout).setOnClickListener {
+            prefManager.saveLoginStatus(false)
             Toast.makeText(this, "Đã đăng xuất", Toast.LENGTH_SHORT).show()
+            updateUI()
         }
 
-        // ✅ BƯỚC 5: Toggle Dark Mode - thêm recreate() để reload giao diện
+        // Nút nạp xu
+        findViewById<View>(R.id.btnTopUp)?.setOnClickListener {
+            startActivity(Intent(this, TopUpActivity::class.java))
+        }
+
+        // Toggle Dark Mode
         findViewById<View>(R.id.tvGiaoDienClick).setOnClickListener {
-            val newDarkModeState = !prefManager.getDarkModeStatus()
-
-            // Lưu trạng thái mới
-            prefManager.saveDarkModeStatus(newDarkModeState)
-
-            // Áp dụng theme mới
-            if (newDarkModeState) {
-                Toast.makeText(this, "Đã BẬT Giao diện tối (Dark Mode)!", Toast.LENGTH_SHORT).show()
+            val newState = !prefManager.getDarkModeStatus()
+            prefManager.saveDarkModeStatus(newState)
+            if (newState) {
+                Toast.makeText(this, "Đã BẬT Giao diện tối!", Toast.LENGTH_SHORT).show()
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             } else {
-                Toast.makeText(this, "Đã TẮT Giao diện tối, chuyển về chế độ Sáng!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Đã TẮT Giao diện tối!", Toast.LENGTH_SHORT).show()
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
-
-            // ✅ QUAN TRỌNG: Reload Activity để giao diện thay đổi ngay lập tức
             recreate()
         }
 
+        updateUI()
         setupBottomNav()
     }
 
     override fun onResume() {
         super.onResume()
-        updateCoinBalance()
+        updateUI()
+    }
+
+    private fun updateUI() {
+        val btnLogin = findViewById<View>(R.id.btnLogin)
+        val btnLogout = findViewById<View>(R.id.btnLogout)
+        val layoutLoggedIn = findViewById<View>(R.id.layoutLoggedIn)
+
+        if (prefManager.getLoginStatus()) {
+            layoutLoggedIn?.visibility = View.VISIBLE
+            btnLogin?.visibility = View.GONE
+            btnLogout?.visibility = View.VISIBLE
+            updateCoinBalance()
+        } else {
+            layoutLoggedIn?.visibility = View.GONE
+            btnLogin?.visibility = View.VISIBLE
+            btnLogout?.visibility = View.GONE
+        }
     }
 
     private fun updateCoinBalance() {
