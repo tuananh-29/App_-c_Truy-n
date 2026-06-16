@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.truyenmoingay.R;
-import com.example.truyenmoingay.adapters.ComicAdapter;
+import com.example.truyenmoingay.models.adapters.ComicAdapter;
 import com.example.truyenmoingay.models.Comic;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.Arrays;

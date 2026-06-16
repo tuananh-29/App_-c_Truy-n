@@ -3,7 +3,6 @@ package com.example.truyenmoingay.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.truyenmoingay.R;
-import com.example.truyenmoingay.models.adapters.ChapterAdapter; // SỬA LẠI ĐƯỜNG DẪN NÀY
+import com.example.truyenmoingay.models.adapters.ChapterAdapter;
 import com.example.truyenmoingay.models.Chapter;
 import com.example.truyenmoingay.models.Comic;
 import com.example.truyenmoingay.utils.ComicDBHelper;
@@ -25,8 +24,6 @@ public class ComicDetailActivity extends AppCompatActivity {
 
     private Comic currentComic;
     private ComicDBHelper db;
-    private ImageButton btnFavorite;
-    private boolean isFav = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,10 +52,10 @@ public class ComicDetailActivity extends AppCompatActivity {
                 "Đây là mô tả của bộ truyện " + title + ". Nội dung hấp dẫn, nhiều tình tiết bất ngờ."
         );
 
+        // ĐÃ XÓA HẲN PHẦN CODE XỬ LÝ NÚT NGÔI SAO (btnFavorite) Ở ĐÂY
 
         Button btnRead = findViewById(R.id.btnReadNow);
         btnRead.setOnClickListener(v -> {
-            db.addOrUpdateHistory(currentComic);
             openReader(1, "Chương 1: Khởi đầu");
         });
 
@@ -72,18 +69,9 @@ public class ComicDetailActivity extends AppCompatActivity {
                         .setPositiveButton("OK", null)
                         .show();
             } else {
-                db.addOrUpdateHistory(currentComic);
                 openReader(chapter.id, chapter.title);
             }
         }));
-    }
-
-    private void updateFavButton() {
-        if (isFav) {
-            btnFavorite.setImageResource(android.R.drawable.btn_star_big_on);
-        } else {
-            btnFavorite.setImageResource(android.R.drawable.btn_star_big_off);
-        }
     }
 
     private List<Chapter> getMockChapters() {
@@ -100,10 +88,12 @@ public class ComicDetailActivity extends AppCompatActivity {
     }
 
     private void openReader(int chapterId, String chapterTitle) {
+        // Lưu vào DB: Truyền thêm chapterId và chapterTitle
+        db.addOrUpdateHistory(currentComic, chapterId, chapterTitle);
+
         Intent intent = new Intent(this, ReaderActivity.class);
-        intent.putExtra("chapter_id", chapterId);
+        intent.putExtra("chapter_id",    chapterId);
         intent.putExtra("chapter_title", chapterTitle);
-        // Truyền thông tin truyện sang để Reader lưu Database
         intent.putExtra("comic_id", currentComic.id);
         intent.putExtra("comic_title", currentComic.title);
         intent.putExtra("comic_author", currentComic.author);

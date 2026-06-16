@@ -3,11 +3,13 @@ package com.example.truyenmoingay.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
+import android.widget.Toast;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.truyenmoingay.R;
-import com.example.truyenmoingay.adapters.ComicAdapter; // SỬA LẠI ĐƯỜNG DẪN NÀY
+import com.example.truyenmoingay.models.adapters.ComicAdapter;
 import com.example.truyenmoingay.models.Comic;
 import com.example.truyenmoingay.utils.ComicDBHelper;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -36,15 +38,16 @@ public class FollowingActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        loadFavorites();
+        loadFollows();
     }
 
-    private void loadFavorites() {
-        List<Comic> favList = db.getAllFavorites();
-        tvFollowCount.setText(favList.size() + " truyện đang theo dõi");
+    private void loadFollows() {
+        List<Comic> followList = db.getAllFollows();
+        tvFollowCount.setText(followList.size() + " truyện đang theo dõi");
 
         if (adapter == null) {
-            adapter = new ComicAdapter(favList, comic -> {
+            adapter = new ComicAdapter(followList, comic -> {
+                // BẮT SỰ KIỆN CLICK THƯỜNG: Mở chi tiết truyện
                 Intent i = new Intent(this, ComicDetailActivity.class);
                 i.putExtra("comic_id", comic.id);
                 i.putExtra("comic_title", comic.title);
@@ -53,9 +56,24 @@ public class FollowingActivity extends AppCompatActivity {
                 i.putExtra("comic_rating", comic.rating);
                 startActivity(i);
             });
+
+            // BẮT SỰ KIỆN NHẤN GIỮ ĐỂ HỦY THEO DÕI
+            adapter.setLongListener(comic -> {
+                new AlertDialog.Builder(this)
+                        .setTitle("Bỏ theo dõi")
+                        .setMessage("Bạn có muốn bỏ theo dõi truyện '" + comic.title + "' không?")
+                        .setPositiveButton("Bỏ theo dõi", (dialog, which) -> {
+                            db.removeFollow(comic.id); // Xóa khỏi Database
+                            loadFollows(); // Tải lại danh sách ngay lập tức
+                            Toast.makeText(this, "Đã bỏ theo dõi", Toast.LENGTH_SHORT).show();
+                        })
+                        .setNegativeButton("Hủy", null)
+                        .show();
+            });
+
             rvFollowing.setAdapter(adapter);
         } else {
-            adapter.updateData(favList);
+            adapter.updateData(followList);
         }
     }
 
