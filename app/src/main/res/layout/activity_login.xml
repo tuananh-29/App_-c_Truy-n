@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="32dp"
+    android:background="@color/bg_root">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="📚 TruyệnMỗiNgày"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        android:textColor="@color/accent_primary"
+        android:layout_marginBottom="40dp"/>
+
+    <EditText
+        android:id="@+id/edtUsername"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:hint="Tên đăng nhập"
+        android:inputType="text"
+        android:padding="12dp"
+        android:background="@drawable/bg_search_bar"
+        android:layout_marginBottom="16dp"/>
+
+    <EditText
+        android:id="@+id/edtPassword"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:hint="Mật khẩu"
+        android:inputType="textPassword"
+        android:padding="12dp"
+        android:background="@drawable/bg_search_bar"
+        android:layout_marginBottom="16dp"/>
+
+    <CheckBox
+        android:id="@+id/chkRemember"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nhớ đăng nhập"
+        android:textColor="@color/text_primary"
+        android:layout_marginBottom="24dp"/>
+
+    <Button
+        android:id="@+id/btnLogin"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:text="Đăng nhập"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:background="@drawable/bg_pill"
+        android:backgroundTint="@color/accent_primary"/>
+
+</LinearLayout>

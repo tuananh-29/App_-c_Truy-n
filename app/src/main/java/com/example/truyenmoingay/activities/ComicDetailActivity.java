@@ -3,9 +3,7 @@ package com.example.truyenmoingay.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -13,79 +11,61 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.truyenmoingay.R;
-import com.example.truyenmoingay.models.adapters.ChapterAdapter; // SỬA LẠI ĐƯỜNG DẪN NÀY
+import com.example.truyenmoingay.adapters.ChapterAdapter;
 import com.example.truyenmoingay.models.Chapter;
-import com.example.truyenmoingay.models.Comic;
-import com.example.truyenmoingay.utils.ComicDBHelper;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class ComicDetailActivity extends AppCompatActivity {
 
-    private Comic currentComic;
-    private ComicDBHelper db;
-    private ImageButton btnFavorite;
-    private boolean isFav = false;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comic_detail);
 
-        db = ComicDBHelper.getInstance(this);
-
-        int comicId = getIntent().getIntExtra("comic_id", 0);
-        String title = getIntent().getStringExtra("comic_title");
+        // Nhận dữ liệu từ HomeActivity
+        String title  = getIntent().getStringExtra("comic_title");
         String author = getIntent().getStringExtra("comic_author");
-        int chapterCount = getIntent().getIntExtra("comic_chapter_count", 0);
-        float rating = getIntent().getFloatExtra("comic_rating", 0f);
 
-        currentComic = new Comic(comicId, title, author, chapterCount, rating);
-
+        // Toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(title);
         toolbar.setNavigationOnClickListener(v -> finish());
 
+        // Hiển thị thông tin
         ((TextView) findViewById(R.id.tvTitle)).setText(title);
         ((TextView) findViewById(R.id.tvAuthor)).setText("Tác giả: " + author);
         ((TextView) findViewById(R.id.tvDescription)).setText(
-                "Đây là mô tả của bộ truyện " + title + ". Nội dung hấp dẫn, nhiều tình tiết bất ngờ."
+                "Đây là mô tả của bộ truyện " + title + ". " +
+                        "Nội dung hấp dẫn, nhiều tình tiết bất ngờ, " +
+                        "thu hút hàng triệu độc giả trên toàn thế giới."
         );
 
-
+        // Nút Đọc ngay → mở chương 1
         Button btnRead = findViewById(R.id.btnReadNow);
-        btnRead.setOnClickListener(v -> {
-            db.addOrUpdateHistory(currentComic);
-            openReader(1, "Chương 1: Khởi đầu");
-        });
+        btnRead.setOnClickListener(v -> openReader(1, "Chương 1: Khởi đầu"));
 
+        // Danh sách chương mock
         RecyclerView rvChapters = findViewById(R.id.rvChapters);
         rvChapters.setLayoutManager(new LinearLayoutManager(this));
         rvChapters.setAdapter(new ChapterAdapter(getMockChapters(), chapter -> {
-            if (chapter.isLocked) {
+            if (chapter.isLocked()) {
+                // Hiện thông báo đơn giản
                 new androidx.appcompat.app.AlertDialog.Builder(this)
                         .setTitle("Chương bị khóa")
-                        .setMessage("Cần " + chapter.coinCost + " coin để mở chương này.")
+                        .setMessage("Cần " + chapter.getCoinCost() + " coin để mở chương này.")
                         .setPositiveButton("OK", null)
                         .show();
             } else {
-                db.addOrUpdateHistory(currentComic);
-                openReader(chapter.id, chapter.title);
+                openReader(chapter.getId(), chapter.getTitle());
             }
         }));
     }
 
-    private void updateFavButton() {
-        if (isFav) {
-            btnFavorite.setImageResource(android.R.drawable.btn_star_big_on);
-        } else {
-            btnFavorite.setImageResource(android.R.drawable.btn_star_big_off);
-        }
-    }
-
+    // ── Mock Data ──────────────────────────────────────────
     private List<Chapter> getMockChapters() {
         return Arrays.asList(
                 new Chapter(1,  "Chương 1: Khởi đầu",        false, 0,  "01/01/2024"),
@@ -101,14 +81,8 @@ public class ComicDetailActivity extends AppCompatActivity {
 
     private void openReader(int chapterId, String chapterTitle) {
         Intent intent = new Intent(this, ReaderActivity.class);
-        intent.putExtra("chapter_id", chapterId);
+        intent.putExtra("chapter_id",    chapterId);
         intent.putExtra("chapter_title", chapterTitle);
-        // Truyền thông tin truyện sang để Reader lưu Database
-        intent.putExtra("comic_id", currentComic.id);
-        intent.putExtra("comic_title", currentComic.title);
-        intent.putExtra("comic_author", currentComic.author);
-        intent.putExtra("comic_chapter_count", currentComic.chapterCount);
-        intent.putExtra("comic_rating", currentComic.rating);
         startActivity(intent);
     }
 }

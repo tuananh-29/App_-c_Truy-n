@@ -14,15 +14,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TruyenMoiNgay">
 
-        <!-- HomeActivity là màn hình khởi động -->
         <activity
-            android:name=".activities.HomeActivity"
+            android:name=".activities.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".activities.HomeActivity"
+            android:exported="false" />
 
         <activity android:name=".activities.ComicDetailActivity" />
         <activity android:name=".activities.ReaderActivity" />
@@ -31,8 +35,5 @@
         <activity android:name=".activities.ExploreActivity" />
         <activity android:name=".activities.ProfileActivity" />
         <activity android:name=".activities.TopUpActivity" />
-        <activity android:name=".activities.HistoryActivity" />
-
     </application>
-
 </manifest>

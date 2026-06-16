@@ -1,5 +1,5 @@
 package com.example.truyenmoingay.activities;
-
+import com.example.truyenmoingay.adapters.ComicAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.truyenmoingay.R;
-import com.example.truyenmoingay.adapters.ComicAdapter; // SỬA LẠI ĐƯỜNG DẪN NÀY
 import com.example.truyenmoingay.models.Comic;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -20,14 +19,22 @@ import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
 
-    // Đã ẩn WalletManager vì chưa có
+    private TextView tvHeaderCoinBalance;
+    private WalletManager wallet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        // Đã ẩn phần nạp xu
+        wallet = WalletManager.getInstance(this);
+
+        tvHeaderCoinBalance = findViewById(R.id.tvHeaderCoinBalance);
+        updateCoinBalance();
+
+        findViewById(R.id.btnCoinBalance).setOnClickListener(v ->
+                startActivity(new Intent(this, TopUpActivity.class))
+        );
 
         List<Comic> mockData = getMockComics();
 
@@ -64,14 +71,24 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateCoinBalance();
+    }
+
+    private void updateCoinBalance() {
+        tvHeaderCoinBalance.setText(String.valueOf(wallet.getBalance()));
+    }
+
     private List<Comic> getMockComics() {
         return Arrays.asList(
-                new Comic(1, "One Piece",          "Oda Eiichiro",   1100, 4.9f),
-                new Comic(2, "Naruto",             "Masashi Kishi",  700,  4.8f),
-                new Comic(3, "Demon Slayer",       "Koyoharu G.",    205,  4.8f),
-                new Comic(4, "Attack on Titan",    "Hajime Isayama", 139,  4.9f),
-                new Comic(5, "My Hero Academia",   "Kōhei Horikoshi", 430,  4.7f),
-                new Comic(6, "Dragon Ball",        "Akira Toriyama", 519,  4.8f)
+                new Comic(1, "One Piece",         "Oda Eiichiro",    1100, 4.9f),
+                new Comic(2, "Naruto",            "Masashi Kishi",   700,  4.8f),
+                new Comic(3, "Demon Slayer",      "Koyoharu G.",     205,  4.8f),
+                new Comic(4, "Attack on Titan",   "Hajime Isayama",  139,  4.9f),
+                new Comic(5, "My Hero Academia",  "Kōhei Horikoshi", 430,  4.7f),
+                new Comic(6, "Dragon Ball",       "Akira Toriyama",  519,  4.8f)
         );
     }
 
@@ -80,8 +97,6 @@ public class HomeActivity extends AppCompatActivity {
         intent.putExtra("comic_id",     comic.id);
         intent.putExtra("comic_title",  comic.title);
         intent.putExtra("comic_author", comic.author);
-        intent.putExtra("comic_chapter_count", comic.chapterCount);
-        intent.putExtra("comic_rating", comic.rating);
         startActivity(intent);
     }
 }
