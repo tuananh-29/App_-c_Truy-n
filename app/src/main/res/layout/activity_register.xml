@@ -9,24 +9,34 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ĐĂNG NHẬP"
-        android:textSize="28sp"
+        android:text="ĐĂNG KÝ TÀI KHOẢN"
+        android:textSize="26sp"
         android:textStyle="bold"
         android:textColor="#333333"
         android:layout_marginBottom="32dp"/>
 
     <EditText
-        android:id="@+id/edtUsername"
+        android:id="@+id/edtRegisterName"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:hint="Email hoặc Tài khoản"
+        android:hint="Họ và tên"
+        android:inputType="textPersonName"
+        android:background="@android:drawable/editbox_background"
+        android:paddingLeft="12dp"
+        android:layout_marginBottom="16dp"/>
+
+    <EditText
+        android:id="@+id/edtRegisterEmail"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="Địa chỉ Email"
         android:inputType="textEmailAddress"
         android:background="@android:drawable/editbox_background"
         android:paddingLeft="12dp"
         android:layout_marginBottom="16dp"/>
 
     <EditText
-        android:id="@+id/edtPassword"
+        android:id="@+id/edtRegisterPassword"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:hint="Mật khẩu"
@@ -36,21 +46,21 @@
         android:layout_marginBottom="24dp"/>
 
     <Button
-        android:id="@+id/btnLogin"
+        android:id="@+id/btnRegister"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:text="Đăng nhập"
+        android:text="Đăng ký"
         android:textSize="16sp"
-        android:backgroundTint="#2196F3"
+        android:backgroundTint="#4CAF50"
         android:textColor="#FFFFFF"
         android:layout_marginBottom="16dp"/>
 
     <TextView
-        android:id="@+id/tvGoToRegister"
+        android:id="@+id/tvGoToLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Chưa có tài khoản? Đăng ký ngay"
-        android:textColor="#2196F3"
+        android:text="Đã có tài khoản? Đăng nhập"
+        android:textColor="#4CAF50"
         android:textSize="14sp"
         android:padding="8dp"/>
 
