@@ -17,12 +17,18 @@ public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.ViewHolder> 
 
     public interface OnClick { void onClick(Comic comic); }
 
-    private final List<Comic> data;
+    private List<Comic> data;        // bỏ final để updateData() hoạt động
     private final OnClick listener;
 
     public ComicAdapter(List<Comic> data, OnClick listener) {
         this.data = data;
         this.listener = listener;
+    }
+
+    // Thêm method này để tìm kiếm hoạt động
+    public void updateData(List<Comic> newList) {
+        this.data = newList;
+        notifyDataSetChanged();
     }
 
     @NonNull

@@ -17,3 +17,4 @@ public class Comic {
         this.coverUrl = ""; // để trống, Glide sẽ hiện placeholder
     }
 }
+
