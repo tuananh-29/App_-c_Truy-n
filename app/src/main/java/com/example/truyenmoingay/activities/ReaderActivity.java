@@ -1,8 +1,7 @@
 package com.example.truyenmoingay.activities;
-
+import com.example.truyenmoingay.adapters.ReaderPageAdapter;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -11,7 +10,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.truyenmoingay.R;
-import com.example.truyenmoingay.adapters.ReaderPageAdapter;
 
 import java.util.Arrays;
 import java.util.List;

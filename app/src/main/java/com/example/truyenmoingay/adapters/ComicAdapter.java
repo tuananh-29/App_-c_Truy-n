@@ -1,16 +1,13 @@
-package com.example.truyenmoingay.models.adapters;
+package com.example.truyenmoingay.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.truyenmoingay.R;
 import com.example.truyenmoingay.models.Comic;
-
 import java.util.List;
 
 public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.ViewHolder> {
@@ -43,6 +40,13 @@ public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.ViewHolder> 
 
     @Override
     public int getItemCount() { return data.size(); }
+
+    // HÀM MỚI THÊM ĐỂ CẬP NHẬT DANH SÁCH
+    public void updateData(List<Comic> newData) {
+        data.clear();
+        data.addAll(newData);
+        notifyDataSetChanged();
+    }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvTitle, tvSub;

@@ -1,5 +1,5 @@
 package com.example.truyenmoingay.activities;
-
+import com.example.truyenmoingay.adapters.ComicAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -11,9 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.truyenmoingay.R;
-import com.example.truyenmoingay.adapters.ComicAdapter;
 import com.example.truyenmoingay.models.Comic;
-import com.example.truyenmoingay.utils.WalletManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.Arrays;
@@ -31,30 +29,27 @@ public class HomeActivity extends AppCompatActivity {
 
         wallet = WalletManager.getInstance(this);
 
-        // Hiển thị số dư xu trên header + mở màn nạp xu khi bấm
         tvHeaderCoinBalance = findViewById(R.id.tvHeaderCoinBalance);
         updateCoinBalance();
+
         findViewById(R.id.btnCoinBalance).setOnClickListener(v ->
                 startActivity(new Intent(this, TopUpActivity.class))
         );
 
         List<Comic> mockData = getMockComics();
 
-        // 1. Lưới 2 cột - Mới cập nhật (Kiểm tra null)
         RecyclerView rvGrid = findViewById(R.id.rvGrid);
         if (rvGrid != null) {
             rvGrid.setLayoutManager(new GridLayoutManager(this, 2));
             rvGrid.setAdapter(new ComicAdapter(mockData, this::openDetail));
         }
 
-        // 2. Danh sách dọc - Top truyện (Kiểm tra null)
         RecyclerView rvList = findViewById(R.id.rvList);
         if (rvList != null) {
             rvList.setLayoutManager(new LinearLayoutManager(this));
             rvList.setAdapter(new ComicAdapter(mockData, this::openDetail));
         }
 
-        // 3. BottomNav — (Kiểm tra null)
         BottomNavigationView nav = findViewById(R.id.bottomNav);
         if (nav != null) {
             nav.setSelectedItemId(R.id.nav_home);
@@ -69,10 +64,9 @@ public class HomeActivity extends AppCompatActivity {
                 } else if (id == R.id.nav_profile) {
                     startActivity(new Intent(this, ProfileActivity.class));
                 }
-                return true; // Bỏ các lệnh finish() đi để người dùng có thể bấm Back quay lại được
+                return true;
             });
         } else {
-            // Cảnh báo nhỏ hiện lên màn hình để bạn biết XML đang thiếu BottomNav
             Toast.makeText(this, "Chưa tìm thấy bottomNav trong XML!", Toast.LENGTH_SHORT).show();
         }
     }
@@ -89,12 +83,12 @@ public class HomeActivity extends AppCompatActivity {
 
     private List<Comic> getMockComics() {
         return Arrays.asList(
-                new Comic(1, "One Piece",          "Oda Eiichiro",   1100, 4.9f),
-                new Comic(2, "Naruto",             "Masashi Kishi",  700,  4.8f),
-                new Comic(3, "Demon Slayer",       "Koyoharu G.",    205,  4.8f),
-                new Comic(4, "Attack on Titan",    "Hajime Isayama", 139,  4.9f),
-                new Comic(5, "My Hero Academia",   "Kōhei Horikoshi", 430,  4.7f),
-                new Comic(6, "Dragon Ball",        "Akira Toriyama", 519,  4.8f)
+                new Comic(1, "One Piece",         "Oda Eiichiro",    1100, 4.9f),
+                new Comic(2, "Naruto",            "Masashi Kishi",   700,  4.8f),
+                new Comic(3, "Demon Slayer",      "Koyoharu G.",     205,  4.8f),
+                new Comic(4, "Attack on Titan",   "Hajime Isayama",  139,  4.9f),
+                new Comic(5, "My Hero Academia",  "Kōhei Horikoshi", 430,  4.7f),
+                new Comic(6, "Dragon Ball",       "Akira Toriyama",  519,  4.8f)
         );
     }
 

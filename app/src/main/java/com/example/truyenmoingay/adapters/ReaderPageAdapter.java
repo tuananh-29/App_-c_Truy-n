@@ -1,4 +1,4 @@
-package com.example.truyenmoingay.models.adapters;
+package com.example.truyenmoingay.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,7 +50,7 @@ public class ReaderPageAdapter extends RecyclerView.Adapter<ReaderPageAdapter.Vi
         ImageView ivPage;
         ViewHolder(@NonNull View v) {
             super(v);
-            ivPage = v.findViewById(R.id.ivPage);
+            ivPage = v.findViewById(R.id.iv_page);
         }
     }
 }
