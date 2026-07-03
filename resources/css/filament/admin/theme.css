@@ -1,0 +1,79 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@tailwind variants;
+@import "../../../../vendor/filament/filament/resources/css/base.css";
+
+@config 'tailwind.config.js';
+/* SIDEBAR */
+.fi-sidebar,
+.fi-sidebar-nav,
+.fi-sidebar-header {
+    background-color: #1a1a2e !important;
+}
+
+.fi-sidebar-header span,
+.fi-sidebar-header a {
+    color: #ffffff !important;
+}
+
+.fi-sidebar-item-button {
+    color: rgba(255, 255, 255, 0.85) !important;
+    border-radius: 0.75rem !important;
+    margin: 2px 8px !important;
+}
+
+.fi-sidebar-item-button:hover {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.fi-sidebar-item-active > .fi-sidebar-item-button {
+    background: linear-gradient(90deg, #e91e63, #c2185b) !important;
+    color: #ffffff !important;
+}
+
+/* NỀN TRANG */
+.fi-main {
+    background-color: #f4f5f7 !important;
+}
+.fi-sidebar-item-label {
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.fi-sidebar-group-label {
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+/* Chữ sidebar trắng rõ */
+.fi-sidebar-item-label {
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.fi-sidebar-item-icon {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+/* Chart 1: nền hồng */
+.fi-wi-chart:nth-of-type(1) {
+    background: linear-gradient(135deg, #e91e63, #c2185b) !important;
+}
+.fi-wi-chart:nth-of-type(1) h2,
+.fi-wi-chart:nth-of-type(1) p {
+    color: #ffffff !important;
+}
+
+/* Chart 2: nền xanh lá */
+.fi-wi-chart:nth-of-type(2) {
+    background: linear-gradient(135deg, #43a047, #1b5e20) !important;
+}
+.fi-wi-chart:nth-of-type(2) h2,
+.fi-wi-chart:nth-of-type(2) p {
+    color: #ffffff !important;
+}
+
+/* Chart 3: nền đen */
+.fi-wi-chart:nth-of-type(3) {
+    background: linear-gradient(135deg, #212121, #424242) !important;
+}
+.fi-wi-chart:nth-of-type(3) h2,
+.fi-wi-chart:nth-of-type(3) p {
+    color: #ffffff !important;
+}
