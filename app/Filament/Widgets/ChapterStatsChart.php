@@ -29,12 +29,12 @@ class ChapterStatsChart extends ChartWidget
                 [
                     'label' => 'Chương mới',
                     'data' => $data->toArray(),
-                    'borderColor' => '#ffffff',
-                    'backgroundColor' => 'rgba(255,255,255,0.1)',
+                    'borderColor' => '#ec4899',
+                    'backgroundColor' => 'rgba(236,72,153,0.15)',
                     'fill' => true,
                     'tension' => 0.4,
                     'borderWidth' => 2,
-                    'pointBackgroundColor' => '#ffffff',
+                    'pointBackgroundColor' => '#ec4899',
                 ],
             ],
             'labels' => $labels->toArray(),
@@ -54,11 +54,11 @@ class ChapterStatsChart extends ChartWidget
             ],
             'scales' => [
                 'y' => [
-                    'ticks' => ['color' => 'rgba(255,255,255,0.7)'],
-                    'grid' => ['color' => 'rgba(255,255,255,0.1)'],
+                    'ticks' => ['color' => 'rgba(107,114,128,0.9)'],
+                    'grid' => ['color' => 'rgba(107,114,128,0.1)'],
                 ],
                 'x' => [
-                    'ticks' => ['color' => 'rgba(255,255,255,0.7)'],
+                    'ticks' => ['color' => 'rgba(107,114,128,0.9)'],
                     'grid' => ['display' => false],
                 ],
             ],

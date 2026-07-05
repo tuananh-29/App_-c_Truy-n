@@ -27,8 +27,8 @@ class MangaViewsChart extends ChartWidget
                 [
                     'label' => 'Truyện mới',
                     'data' => $data->toArray(),
-                    'backgroundColor' => 'rgba(255,255,255,0.3)',
-                    'borderColor' => '#ffffff',
+                  'backgroundColor' => '#ec4899', // hồng  
+'borderColor' => '#db2777',
                     'borderWidth' => 2,
                 ],
             ],
