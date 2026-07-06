@@ -1,0 +1,195 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    background: #0f0f0f;
+    color: #fff;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* NAVBAR */
+.navbar {
+    background: #1a1a1a;
+    padding: 14px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 2px solid #e05c00;
+}
+.navbar .logo {
+    font-size: 22px;
+    font-weight: bold;
+    color: #e05c00;
+    text-decoration: none;
+}
+.navbar nav a {
+    color: #ccc;
+    text-decoration: none;
+    margin-left: 20px;
+    font-size: 14px;
+    transition: color 0.2s;
+}
+.navbar nav a:hover { color: #e05c00; }
+.search-form {
+    display: flex;
+    gap: 8px;
+}
+.search-form input {
+    padding: 8px 14px;
+    border-radius: 6px;
+    border: 1px solid #333;
+    background: #111;
+    color: #fff;
+    font-size: 14px;
+    width: 220px;
+}
+.search-form button {
+    padding: 8px 16px;
+    background: #e05c00;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* COMIC GRID */
+.section { padding: 24px 32px; }
+.section h2 {
+    font-size: 18px;
+    color: #ccc;
+    margin-bottom: 16px;
+    border-left: 4px solid #e05c00;
+    padding-left: 12px;
+}
+.comic-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 16px;
+}
+.comic-card {
+    background: #1a1a1a;
+    border-radius: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.comic-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(224,92,0,0.3);
+}
+.comic-card img {
+    width: 100%;
+    aspect-ratio: 3/4;
+    object-fit: cover;
+    background: #333;
+}
+.comic-card .info { padding: 10px; }
+.comic-card .title {
+    font-size: 13px;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.comic-card .sub {
+    font-size: 11px;
+    color: #888;
+    margin-top: 4px;
+}
+
+/* DETAIL PAGE */
+.detail-head {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+.detail-cover {
+    width: 180px;
+    min-width: 180px;
+    height: 240px;
+    object-fit: cover;
+    border-radius: 10px;
+    background: #333;
+}
+.detail-info h1 { font-size: 24px; margin-bottom: 8px; }
+.detail-info .meta { color: #aaa; margin-bottom: 4px; font-size: 14px; }
+.detail-info .status-done { color: #4CAF50; }
+.detail-info .status-ongoing { color: #e05c00; }
+.detail-info .desc { color: #888; margin-top: 12px; font-size: 14px; line-height: 1.6; }
+
+/* CHAPTER LIST */
+.chapter-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 8px;
+    margin-top: 12px;
+}
+.chapter-item {
+    padding: 8px;
+    background: #1a1a1a;
+    color: #fff;
+    border: 1px solid #333;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+}
+.chapter-item:hover { border-color: #e05c00; color: #e05c00; }
+
+/* ERROR */
+.error-box {
+    text-align: center;
+    padding: 60px;
+    color: #e05c00;
+}
+
+/* READER */
+.reader-head {
+    text-align: center;
+    padding: 16px;
+    background: #1a1a1a;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+.reader-head .back-link {
+    background: none;
+    border: none;
+    color: #e05c00;
+    cursor: pointer;
+    font-size: 14px;
+}
+.reader-head .reader-title { margin-left: 16px; color: #ccc; }
+.reader-page { max-width: 800px; margin: 0 auto; padding: 16px; }
+.reader-page img { width: 100%; display: block; margin-bottom: 2px; }
+.reader-nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px 32px;
+    background: #1a1a1a;
+    position: sticky;
+    bottom: 0;
+}
+.reader-nav button {
+    padding: 10px 24px;
+    background: #e05c00;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+}
+.reader-nav button:disabled {
+    background: #333;
+    cursor: not-allowed;
+}
+
+/* LOADING & EMPTY */
+.loading, .empty {
+    text-align: center;
+    padding: 60px;
+    color: #666;
+    font-size: 16px;
+}
