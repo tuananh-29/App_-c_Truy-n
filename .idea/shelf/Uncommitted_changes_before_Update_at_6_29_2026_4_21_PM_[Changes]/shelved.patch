@@ -1,0 +1,38 @@
+Index: app/src/main/java/com/example/truyenmoingay/SearchViewModel.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.truyenmoingay;\r\n\r\nimport androidx.lifecycle.LiveData;\r\nimport androidx.lifecycle.MutableLiveData;\r\nimport androidx.lifecycle.ViewModel;\r\nimport java.util.List;\r\n\r\npublic class SearchViewModel extends ViewModel {\r\n    // Biến lưu từ khóa tìm kiếm (Giữ trạng thái khi xoay màn hình)\r\n    private String searchKeyword = \"\";\r\n\r\n    // Danh sách truyện tìm kiếm được\r\n    private final MutableLiveData<List<String>> searchResults = new MutableLiveData<>();\r\n\r\n    public String getSearchKeyword() {\r\n        return searchKeyword;\r\n    }\r\n\r\n    public void setSearchKeyword(String searchKeyword) {\r\n        this.searchKeyword = searchKeyword;\r\n    }\r\n\r\n    public LiveData<List<String>> getSearchResults() {\r\n        return searchResults;\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/truyenmoingay/SearchViewModel.java b/app/src/main/java/com/example/truyenmoingay/SearchViewModel.java
+--- a/app/src/main/java/com/example/truyenmoingay/SearchViewModel.java	(revision 846f23179692c4f9602f53e4175741e01afcf7c0)
++++ b/app/src/main/java/com/example/truyenmoingay/SearchViewModel.java	(date 1782724020765)
+@@ -17,7 +17,7 @@
+     }
+ 
+     public void setSearchKeyword(String searchKeyword) {
+-        this.searchKeyword = searchKeyword;
++        this.DsearchKeyword = searchKeyword;
+     }
+ 
+     public LiveData<List<String>> getSearchResults() {
+Index: app/src/main/java/com/example/truyenmoingay/activities/ComicDetailActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.truyenmoingay.activities;\r\n\r\nimport android.content.Intent;\r\nimport android.os.Bundle;\r\nimport android.widget.Button;\r\nimport android.widget.TextView;\r\n\r\nimport androidx.appcompat.app.AppCompatActivity;\r\nimport androidx.appcompat.widget.Toolbar;\r\nimport androidx.recyclerview.widget.LinearLayoutManager;\r\nimport androidx.recyclerview.widget.RecyclerView;\r\n\r\nimport com.example.truyenmoingay.R;\r\nimport com.example.truyenmoingay.adapters.ChapterAdapter;\r\nimport com.example.truyenmoingay.models.Chapter;\r\n\r\nimport java.util.Arrays;\r\nimport java.util.List;\r\n\r\npublic class ComicDetailActivity extends AppCompatActivity {\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        setContentView(R.layout.activity_comic_detail);\r\n\r\n        // Nhận dữ liệu từ HomeActivity\r\n        String title  = getIntent().getStringExtra(\"comic_title\");\r\n        String author = getIntent().getStringExtra(\"comic_author\");\r\n\r\n        // Toolbar\r\n        Toolbar toolbar = findViewById(R.id.toolbar);\r\n        setSupportActionBar(toolbar);\r\n        getSupportActionBar().setDisplayHomeAsUpEnabled(true);\r\n        getSupportActionBar().setTitle(title);\r\n        toolbar.setNavigationOnClickListener(v -> finish());\r\n\r\n        // Hiển thị thông tin\r\n        ((TextView) findViewById(R.id.tvTitle)).setText(title);\r\n        ((TextView) findViewById(R.id.tvAuthor)).setText(\"Tác giả: \" + author);\r\n        ((TextView) findViewById(R.id.tvDescription)).setText(\r\n                \"Đây là mô tả của bộ truyện \" + title + \". \" +\r\n                        \"Nội dung hấp dẫn, nhiều tình tiết bất ngờ, \" +\r\n                        \"thu hút hàng triệu độc giả trên toàn thế giới.\"\r\n        );\r\n\r\n        // Nút Đọc ngay → mở chương 1\r\n        Button btnRead = findViewById(R.id.btnReadNow);\r\n        btnRead.setOnClickListener(v -> openReader(1, \"Chương 1: Khởi đầu\"));\r\n\r\n        // Danh sách chương mock\r\n        RecyclerView rvChapters = findViewById(R.id.rvChapters);\r\n        rvChapters.setLayoutManager(new LinearLayoutManager(this));\r\n        rvChapters.setAdapter(new ChapterAdapter(getMockChapters(), chapter -> {\r\n            if (chapter.isLocked) {\r\n                // Hiện thông báo đơn giản\r\n                new androidx.appcompat.app.AlertDialog.Builder(this)\r\n                        .setTitle(\"Chương bị khóa\")\r\n                        .setMessage(\"Cần \" + chapter.coinCost + \" coin để mở chương này.\")\r\n                        .setPositiveButton(\"OK\", null)\r\n                        .show();\r\n            } else {\r\n                openReader(chapter.id, chapter.title);\r\n            }\r\n        }));\r\n    }\r\n\r\n    // ── Mock Data ──────────────────────────────────────────\r\n    private List<Chapter> getMockChapters() {\r\n        return Arrays.asList(\r\n                new Chapter(1,  \"Chương 1: Khởi đầu\",        false, 0,  \"01/01/2024\"),\r\n                new Chapter(2,  \"Chương 2: Cuộc gặp gỡ\",     false, 0,  \"05/01/2024\"),\r\n                new Chapter(3,  \"Chương 3: Bí ẩn hé lộ\",     false, 0,  \"10/01/2024\"),\r\n                new Chapter(4,  \"Chương 4: Trận chiến đầu\",  false, 0,  \"15/01/2024\"),\r\n                new Chapter(5,  \"Chương 5: Kẻ thù xuất hiện\",true,  5,  \"20/01/2024\"),\r\n                new Chapter(6,  \"Chương 6: Sức mạnh mới\",    true,  5,  \"25/01/2024\"),\r\n                new Chapter(7,  \"Chương 7: Đỉnh điểm\",       true,  10, \"30/01/2024\"),\r\n                new Chapter(8,  \"Chương 8: Kết cục bất ngờ\", true,  10, \"05/02/2024\")\r\n        );\r\n    }\r\n\r\n    private void openReader(int chapterId, String chapterTitle) {\r\n        Intent intent = new Intent(this, ReaderActivity.class);\r\n        intent.putExtra(\"chapter_id\",    chapterId);\r\n        intent.putExtra(\"chapter_title\", chapterTitle);\r\n        startActivity(intent);\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/truyenmoingay/activities/ComicDetailActivity.java b/app/src/main/java/com/example/truyenmoingay/activities/ComicDetailActivity.java
+--- a/app/src/main/java/com/example/truyenmoingay/activities/ComicDetailActivity.java	(revision 846f23179692c4f9602f53e4175741e01afcf7c0)
++++ b/app/src/main/java/com/example/truyenmoingay/activities/ComicDetailActivity.java	(date 1782723954281)
+@@ -11,7 +11,7 @@
+ import androidx.recyclerview.widget.RecyclerView;
+ 
+ import com.example.truyenmoingay.R;
+-import com.example.truyenmoingay.adapters.ChapterAdapter;
++import com.example.truyenmoingay.models.adapters.ChapterAdapter;
+ import com.example.truyenmoingay.models.Chapter;
+ 
+ import java.util.Arrays;
