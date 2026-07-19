@@ -1,4 +1,4 @@
-package com.example.truyenmoingay.activities
+package com.example.truyenmoingay.utils
 
 import android.content.Context
 

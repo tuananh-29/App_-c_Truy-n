@@ -55,4 +55,14 @@
         android:background="@drawable/bg_pill"
         android:backgroundTint="@color/accent_primary"/>
 
+    <TextView
+        android:id="@+id/tvGoToRegister"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chưa có tài khoản? Đăng ký ngay"
+        android:textColor="@color/accent_primary"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_marginTop="20dp"/>
+
 </LinearLayout>
