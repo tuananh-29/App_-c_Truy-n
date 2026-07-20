@@ -52,36 +52,43 @@ public class LoginActivity extends AppCompatActivity {
             String email = edtUsername.getText().toString().trim();
             String password = edtPassword.getText().toString().trim();
 
+            // 1. Kiểm tra không được rỗng
             if (email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(LoginActivity.this, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
                 return;
             }
 
+            // 2. Gọi hàm loginUser từ ApiService
             RetrofitClient.getApiService().loginUser(email, password).enqueue(new Callback<AuthResponse>() {
                 @Override
                 public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
+                    // 3. Nếu API trả về thành công (HTTP 200) và có dữ liệu
                     if (response.isSuccessful() && response.body() != null) {
                         AuthResponse authResponse = response.body();
 
-                        // Lưu JWT token để gọi các API cần xác thực sau này
+                        // Lưu JWT token vào SharedPreferences
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putString("JWT_TOKEN", authResponse.getToken());
                         editor.apply();
 
-                        // Đánh dấu trạng thái đã đăng nhập để ProfileActivity hiển thị đúng UI
+                        // Sử dụng SharedPrefManager để lưu trạng thái đăng nhập
                         prefManager.saveLoginStatus(true);
 
                         Toast.makeText(LoginActivity.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
+
+                        // 4. Mở HomeActivity và finish()
                         startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                         finish();
                     } else {
+                        // Thất bại: HTTP lỗi hoặc dữ liệu không khớp
                         Toast.makeText(LoginActivity.this, "Tài khoản hoặc mật khẩu không đúng", Toast.LENGTH_SHORT).show();
                     }
                 }
 
                 @Override
                 public void onFailure(Call<AuthResponse> call, Throwable t) {
-                    Toast.makeText(LoginActivity.this, "Lỗi kết nối hệ thống Backend", Toast.LENGTH_SHORT).show();
+                    // Lỗi kết nối hệ thống
+                    Toast.makeText(LoginActivity.this, "Lỗi kết nối hệ thống Backend: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         });

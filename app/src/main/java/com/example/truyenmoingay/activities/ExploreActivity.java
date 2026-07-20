@@ -2,41 +2,113 @@ package com.example.truyenmoingay.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.truyenmoingay.R;
+import com.example.truyenmoingay.RetrofitClient;
 import com.example.truyenmoingay.adapters.ComicAdapter;
 import com.example.truyenmoingay.models.Comic;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class ExploreActivity extends AppCompatActivity {
+
+    private RecyclerView rvRanking;
+    private ComicAdapter adapter;
+    private List<Comic> comicList = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explore);
 
-        RecyclerView rv = findViewById(R.id.rvRanking);
-        rv.setLayoutManager(new LinearLayoutManager(this));
-        rv.setAdapter(new ComicAdapter(getMockRanking(), comic -> {
-            Intent i = new Intent(this, ComicDetailActivity.class);
-            i.putExtra("comic_id", comic.id);
-            i.putExtra("comic_title", comic.title);
-            i.putExtra("comic_author", comic.author);
-            startActivity(i);
-        }));
+        rvRanking = findViewById(R.id.rvRanking);
+        rvRanking.setLayoutManager(new LinearLayoutManager(this));
+
+        loadComics("trending", 1);
 
         setupBottomNav();
     }
 
-    private List<Comic> getMockRanking() {
-        return Arrays.asList(
-                new Comic(1, "Kiếm Đạo Độc Tôn",  "Lê Văn C",    445, 4.9f),
-                new Comic(2, "Võ Lâm Tranh Bá",    "Hoàng Văn E", 310, 4.7f),
-                new Comic(3, "Hành Trình Tu Tiên", "Nguyễn Văn A",230, 4.8f)
-        );
+    private void loadComics(String type, int page) {
+        RetrofitClient.getApiService().getList(type, page).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+                        String jsonStr = response.body().string();
+                        JSONObject root = new JSONObject(jsonStr);
+                        
+                        // Giả sử API trả về { "status": "success", "data": [...] } hoặc trực tiếp mảng
+                        // Ở đây ta giả định cấu trúc từ HomeActivity: { "data": { "items": [...] } }
+                        JSONArray items;
+                        if (root.has("data") && root.get("data") instanceof JSONObject) {
+                            items = root.getJSONObject("data").optJSONArray("items");
+                        } else {
+                            items = root.optJSONArray("data");
+                        }
+
+                        if (items != null) {
+                            comicList.clear();
+                            for (int i = 0; i < items.length(); i++) {
+                                JSONObject obj = items.getJSONObject(i);
+                                
+                                String title = obj.optString("name", obj.optString("title"));
+                                String author = obj.optString("author", "Đang cập nhật");
+                                String cover = obj.optString("thumb_url", obj.optString("cover"));
+                                
+                                // Thay thế IP 127.0.0.1 thành 10.0.2.2 cho link ảnh
+                                if (cover != null) {
+                                    cover = cover.replace("127.0.0.1", "10.0.2.2");
+                                }
+
+                                Comic comic = new Comic(i, title, author, 0, 5.0f);
+                                comic.coverUrl = cover;
+                                comicList.add(comic);
+                            }
+
+                            if (adapter == null) {
+                                adapter = new ComicAdapter(comicList, comic -> {
+                                    Intent intent = new Intent(ExploreActivity.this, ComicDetailActivity.class);
+                                    intent.putExtra("comic_title", comic.title);
+                                    intent.putExtra("comic_author", comic.author);
+                                    // Thêm slug nếu cần
+                                    startActivity(intent);
+                                });
+                                rvRanking.setAdapter(adapter);
+                            } else {
+                                adapter.notifyDataSetChanged();
+                            }
+                        }
+
+                    } catch (Exception e) {
+                        Log.e("ExploreActivity", "Error parsing: " + e.getMessage());
+                        Toast.makeText(ExploreActivity.this, "Lỗi xử lý dữ liệu", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(ExploreActivity.this, "Lỗi kết nối", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void setupBottomNav() {

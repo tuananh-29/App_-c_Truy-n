@@ -15,11 +15,13 @@
         android:orientation="vertical"
         android:padding="10dp">
 
-        <!-- Placeholder ảnh bìa -->
-        <View
+        <!-- Placeholder ảnh bìa đã được sửa -->
+        <ImageView
+            android:id="@+id/imageViewCover"
             android:layout_width="match_parent"
             android:layout_height="140dp"
-            android:background="@drawable/bg_cover_placeholder" />
+            android:scaleType="centerCrop"
+            android:src="@drawable/bg_cover_placeholder" />
 
         <TextView
             android:id="@+id/tvTitle"
