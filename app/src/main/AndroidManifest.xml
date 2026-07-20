@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:usesCleartextTraffic="true"
 
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -16,7 +17,7 @@
         android:theme="@style/Theme.TruyenMoiNgay">
 
         <activity
-            android:name=".activities.LoginActivity"
+            android:name=".activities.HomeActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,11 +27,11 @@
         </activity>
 
         <activity
-            android:name=".activities.RegisterActivity"
+            android:name=".activities.LoginActivity"
             android:exported="false" />
 
         <activity
-            android:name=".activities.HomeActivity"
+            android:name=".activities.RegisterActivity"
             android:exported="false" />
 
         <activity android:name=".activities.ComicDetailActivity" />
