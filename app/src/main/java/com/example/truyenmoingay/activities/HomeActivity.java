@@ -1,5 +1,5 @@
 package com.example.truyenmoingay.activities;
-import com.example.truyenmoingay.adapters.ComicAdapter;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -11,16 +11,29 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.truyenmoingay.R;
+import com.example.truyenmoingay.RetrofitClient;
+import com.example.truyenmoingay.adapters.ComicAdapter;
 import com.example.truyenmoingay.models.Comic;
+import com.example.truyenmoingay.utils.WalletManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.util.Arrays;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class HomeActivity extends AppCompatActivity {
 
     private TextView tvHeaderCoinBalance;
     private WalletManager wallet;
+    private RecyclerView rvGrid;
+    private RecyclerView rvList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,19 +49,17 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(new Intent(this, TopUpActivity.class))
         );
 
-        List<Comic> mockData = getMockComics();
-
-        RecyclerView rvGrid = findViewById(R.id.rvGrid);
+        rvGrid = findViewById(R.id.rvGrid);
         if (rvGrid != null) {
             rvGrid.setLayoutManager(new GridLayoutManager(this, 2));
-            rvGrid.setAdapter(new ComicAdapter(mockData, this::openDetail));
         }
 
-        RecyclerView rvList = findViewById(R.id.rvList);
+        rvList = findViewById(R.id.rvList);
         if (rvList != null) {
             rvList.setLayoutManager(new LinearLayoutManager(this));
-            rvList.setAdapter(new ComicAdapter(mockData, this::openDetail));
         }
+
+        loadComicsFromApi();
 
         BottomNavigationView nav = findViewById(R.id.bottomNav);
         if (nav != null) {
@@ -81,21 +92,95 @@ public class HomeActivity extends AppCompatActivity {
         tvHeaderCoinBalance.setText(String.valueOf(wallet.getBalance()));
     }
 
-    private List<Comic> getMockComics() {
-        return Arrays.asList(
-                new Comic(1, "One Piece",         "Oda Eiichiro",    1100, 4.9f),
-                new Comic(2, "Naruto",            "Masashi Kishi",   700,  4.8f),
-                new Comic(3, "Demon Slayer",      "Koyoharu G.",     205,  4.8f),
-                new Comic(4, "Attack on Titan",   "Hajime Isayama",  139,  4.9f),
-                new Comic(5, "My Hero Academia",  "Kōhei Horikoshi", 430,  4.7f),
-                new Comic(6, "Dragon Ball",       "Akira Toriyama",  519,  4.8f)
-        );
+    // ── Gọi API lấy danh sách truyện mới ──────────────────────────────
+    private void loadComicsFromApi() {
+        RetrofitClient.getApiService().getHome().enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (!response.isSuccessful() || response.body() == null) {
+                    Toast.makeText(HomeActivity.this, "Không tải được dữ liệu truyện (mã lỗi: " + response.code() + ")", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                try {
+                    String rawJson = response.body().string();
+                    List<Comic> comics = parseComicsFromJson(rawJson);
+
+                    if (comics.isEmpty()) {
+                        Toast.makeText(HomeActivity.this, "Danh sách truyện trống", Toast.LENGTH_SHORT).show();
+                    }
+
+                    if (rvGrid != null) {
+                        rvGrid.setAdapter(new ComicAdapter(comics, HomeActivity.this::openDetail));
+                    }
+                    if (rvList != null) {
+                        rvList.setAdapter(new ComicAdapter(comics, HomeActivity.this::openDetail));
+                    }
+                } catch (Exception e) {
+                    Toast.makeText(HomeActivity.this, "Lỗi xử lý dữ liệu: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(HomeActivity.this, "Lỗi kết nối tới server: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                t.printStackTrace();
+            }
+        });
+    }
+
+    /**
+     * Parse JSON trả về từ backend Laravel (proxy OTruyen API).
+     * Cấu trúc thật: { "data": { "items": [...], "APP_DOMAIN_CDN_IMAGE": "https://img.otruyenapi.com" } }
+     * Link ảnh đầy đủ = APP_DOMAIN_CDN_IMAGE + "/uploads/comics/" + thumb_url
+     */
+    private List<Comic> parseComicsFromJson(String rawJson) throws Exception {
+        List<Comic> result = new ArrayList<>();
+
+        JSONObject root = new JSONObject(rawJson);
+        JSONObject data = root.optJSONObject("data");
+        if (data == null) return result;
+
+        JSONArray items = data.optJSONArray("items");
+        if (items == null) return result;
+
+        // Domain CDN ảnh — dùng để ghép thành link ảnh đầy đủ
+        String cdnDomain = data.optString("APP_DOMAIN_CDN_IMAGE", "https://img.otruyenapi.com");
+
+        for (int i = 0; i < items.length(); i++) {
+            JSONObject item = items.getJSONObject(i);
+
+            String title = item.optString("name", "Chưa rõ tên");
+            String slug = item.optString("slug", "");
+            String thumbFile = item.optString("thumb_url", "");
+            String fullThumbUrl = thumbFile.isEmpty() ? "" : cdnDomain + "/uploads/comics/" + thumbFile;
+
+            // Lấy tên chương mới nhất để hiển thị thay cho "tác giả" tạm thời (JSON không có field author)
+            String latestChapter = "Đang cập nhật";
+            JSONArray chaptersLatest = item.optJSONArray("chaptersLatest");
+            if (chaptersLatest != null && chaptersLatest.length() > 0) {
+                JSONObject lastChap = chaptersLatest.getJSONObject(chaptersLatest.length() - 1);
+                latestChapter = "Chương " + lastChap.optString("chapter_name", "?");
+            }
+
+            Comic comic = new Comic(
+                    i, // id tạm dùng index để hiển thị; slug mới là khóa thật để mở chi tiết truyện
+                    title,
+                    latestChapter,
+                    0,
+                    5.0f
+            );
+            comic.coverUrl = fullThumbUrl;
+            result.add(comic);
+        }
+
+        return result;
     }
 
     private void openDetail(Comic comic) {
         Intent intent = new Intent(this, ComicDetailActivity.class);
-        intent.putExtra("comic_id",     comic.id);
-        intent.putExtra("comic_title",  comic.title);
+        intent.putExtra("comic_id", comic.id);
+        intent.putExtra("comic_title", comic.title);
         intent.putExtra("comic_author", comic.author);
         startActivity(intent);
     }

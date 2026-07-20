@@ -1,11 +1,19 @@
-package com.example.truyenmoingay;
+package com.example.truyenmoingay.activities;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.truyenmoingay.ApiService;
+import com.example.truyenmoingay.AuthResponse;
+import com.example.truyenmoingay.R;
+import com.example.truyenmoingay.RetrofitClient;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -43,7 +51,6 @@ public class RegisterActivity extends AppCompatActivity {
                 public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
                     if (response.isSuccessful()) {
                         Toast.makeText(RegisterActivity.this, "Đăng ký thành công! Hãy đăng nhập", Toast.LENGTH_SHORT).show();
-                        // Đăng ký xong tự quay về màn hình Login để người dùng nhập lại tài khoản
                         startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
                         finish();
                     } else {
@@ -58,9 +65,6 @@ public class RegisterActivity extends AppCompatActivity {
             });
         });
 
-        // Bấm chữ Đăng nhập -> Quay lại LoginActivity
-        tvGoToLogin.setOnClickListener(v -> {
-            finish(); // Tắt màn hình này đi sẽ tự quay về màn hình Login trước đó
-        });
+        tvGoToLogin.setOnClickListener(v -> finish());
     }
 }
