@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.truyenmoingay.R;
 import com.example.truyenmoingay.models.Comic;
+import com.example.truyenmoingay.utils.WalletManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.Arrays;

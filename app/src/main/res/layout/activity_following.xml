@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -27,13 +26,13 @@
             android:id="@+id/tvFollowCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0 truyện đang theo dõi"
+            android:text="3 truyện đang theo dõi"
             android:textSize="13sp"
             android:textColor="@color/text_secondary"
             android:layout_marginTop="2dp" />
     </LinearLayout>
 
-    <!-- Stats row (Đã thêm lại phần này) -->
+    <!-- Stats row -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -103,6 +102,7 @@
         android:background="@color/bg_surface"
         app:itemIconTint="@color/accent_primary"
         app:itemTextColor="@color/accent_primary"
-        app:menu="@menu/bottom_nav_menu" />
+        app:menu="@menu/bottom_nav_menu"
+        xmlns:app="http://schemas.android.com/apk/res-auto" />
 
 </LinearLayout>
