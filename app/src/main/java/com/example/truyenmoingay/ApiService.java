@@ -23,7 +23,8 @@ public interface ApiService {
     Call<AuthResponse> registerUser(
             @Field("name") String name,
             @Field("email") String email,
-            @Field("password") String password
+            @Field("password") String password,
+            @Field("password_confirmation") String passwordConfirmation
     );
 
     @GET("api/truyen-moi")
