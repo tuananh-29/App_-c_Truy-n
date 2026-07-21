@@ -155,6 +155,7 @@ public class ComicDetailActivity extends AppCompatActivity {
 
     private void openReader(int chapterId, String chapterTitle) {
         Intent intent = new Intent(this, ReaderActivity.class);
+        intent.putExtra("comic_slug",    getIntent().getStringExtra("comic_slug"));
         intent.putExtra("chapter_id",    chapterId);
         intent.putExtra("chapter_title", chapterTitle);
         startActivity(intent);

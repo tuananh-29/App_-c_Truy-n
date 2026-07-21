@@ -14,6 +14,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 class ProfileActivity : AppCompatActivity() {
 
     private var tvCoinBalance: TextView? = null
+    private var tvUserName: TextView? = null
+    private var tvUserEmail: TextView? = null
     private var wallet: WalletManager? = null
     private lateinit var prefManager: SharedPrefManager
 
@@ -35,7 +37,10 @@ class ProfileActivity : AppCompatActivity() {
         // ✅ BƯỚC 4: Khởi tạo các view
         wallet = WalletManager.getInstance(this)
         tvCoinBalance = findViewById(R.id.tvCoinBalance)
-        updateCoinBalance()
+        tvUserName = findViewById(R.id.tvUserName) // Cần ánh xạ thêm View này
+        tvUserEmail = findViewById(R.id.tvUserEmail) // Cần ánh xạ thêm View này
+        
+        updateUI()
 
         // Nút nạp xu
         findViewById<View>(R.id.btnTopUp).setOnClickListener {
@@ -44,7 +49,18 @@ class ProfileActivity : AppCompatActivity() {
 
         // Nút đăng xuất
         findViewById<View>(R.id.btnLogout).setOnClickListener {
+            // Xóa dữ liệu đăng nhập
+            val sharedPreferences = getSharedPreferences("AppPrefs", MODE_PRIVATE)
+            sharedPreferences.edit().clear().apply()
+            prefManager.saveLoginStatus(false)
+            
             Toast.makeText(this, "Đã đăng xuất", Toast.LENGTH_SHORT).show()
+            recreate() // Reload activity
+        }
+
+        // Nút đăng nhập / đăng ký (layout id="btnLogin" trong XML)
+        findViewById<View>(R.id.btnLogin).setOnClickListener {
+            startActivity(Intent(this, LoginActivity::class.java))
         }
 
         // ✅ BƯỚC 5: Toggle Dark Mode - thêm recreate() để reload giao diện
@@ -72,12 +88,38 @@ class ProfileActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        updateCoinBalance()
+        updateUI()
     }
 
-    private fun updateCoinBalance() {
-        if (wallet != null && tvCoinBalance != null) {
-            tvCoinBalance!!.text = "${wallet!!.balance} xu"
+    private fun updateUI() {
+        val isLoggedIn = prefManager.getLoginStatus() // Gọi phương thức đúng của Java class
+        val layoutLoggedIn = findViewById<View>(R.id.layoutLoggedIn)
+        val btnLoginLayout = findViewById<View>(R.id.btnLogin)
+        val btnLogout = findViewById<View>(R.id.btnLogout)
+
+        if (isLoggedIn) {
+            layoutLoggedIn.visibility = View.VISIBLE
+            btnLogout.visibility = View.VISIBLE
+            btnLoginLayout.visibility = View.GONE
+            
+            // Lấy thông tin từ SharedPreferences (AppPrefs)
+            val sharedPrefs = getSharedPreferences("AppPrefs", MODE_PRIVATE)
+            val email = sharedPrefs.getString("USER_EMAIL", "ngdung@email.com")
+            val name = sharedPrefs.getString("USER_NAME", "Người dùng")
+            
+            tvUserName?.text = name
+            tvUserEmail?.text = email
+            
+            if (wallet != null && tvCoinBalance != null) {
+                tvCoinBalance!!.text = "${wallet!!.balance} xu"
+            }
+        } else {
+            layoutLoggedIn.visibility = View.GONE
+            btnLogout.visibility = View.GONE
+            btnLoginLayout.visibility = View.VISIBLE
+            
+            tvUserName?.text = "Khách"
+            tvUserEmail?.text = "Chưa đăng nhập"
         }
     }
 

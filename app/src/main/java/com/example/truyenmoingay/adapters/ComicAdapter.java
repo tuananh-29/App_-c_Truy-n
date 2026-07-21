@@ -3,12 +3,12 @@ package com.example.truyenmoingay.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView; // Đã thêm import ImageView
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide; // Đã thêm import Glide
+import com.bumptech.glide.Glide;
 import com.example.truyenmoingay.R;
 import com.example.truyenmoingay.models.Comic;
 
@@ -36,13 +36,13 @@ public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        // Lấy dữ liệu từ biến "data" (không phải comicList)
+        // Lấy dữ liệu từ biến "data"
         Comic comic = data.get(position);
 
-        // Gán tên truyện (truy cập trực tiếp biến public "title", không dùng hàm getTitle)
+        // Gán tên truyện
         holder.tvTitle.setText(comic.title);
 
-        // Lấy link ảnh từ biến public "coverUrl" (không dùng getThumbnail)
+        // Lấy link ảnh từ biến public "coverUrl"
         String rawImageUrl = comic.coverUrl;
 
         // Kiểm tra link ảnh không rỗng trước khi load
@@ -54,6 +54,13 @@ public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.ViewHolder> 
                     .placeholder(R.drawable.bg_cover_placeholder)
                     .into(holder.imageViewCover);
         }
+
+        // Bổ sung sự kiện click để mở chi tiết truyện
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onClick(comic);
+            }
+        });
     }
 
     @Override
@@ -67,14 +74,12 @@ public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.ViewHolder> 
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvTitle, tvSub;
-        ImageView imageViewCover; // Khai báo thêm biến ảnh để hết báo đỏ
+        ImageView imageViewCover;
 
         ViewHolder(@NonNull View v) {
             super(v);
             tvTitle = v.findViewById(R.id.tvTitle);
             tvSub   = v.findViewById(R.id.tvSub);
-
-            // Ánh xạ ImageView. Lưu ý: Đảm bảo ID "imageViewCover" khớp với ID trong file item_comic.xml
             imageViewCover = v.findViewById(R.id.imageViewCover);
         }
     }

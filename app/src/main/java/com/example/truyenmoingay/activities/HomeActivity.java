@@ -171,6 +171,10 @@ public class HomeActivity extends AppCompatActivity {
                     5.0f
             );
             comic.coverUrl = fullThumbUrl;
+
+            // ĐÃ THÊM DÒNG NÀY ĐỂ LƯU SLUG
+            comic.slug = slug;
+
             result.add(comic);
         }
 
@@ -182,6 +186,10 @@ public class HomeActivity extends AppCompatActivity {
         intent.putExtra("comic_id", comic.id);
         intent.putExtra("comic_title", comic.title);
         intent.putExtra("comic_author", comic.author);
+
+        // ĐÃ THÊM DÒNG NÀY ĐỂ TRUYỀN SLUG SANG MÀN HÌNH CHI TIẾT
+        intent.putExtra("comic_slug", comic.slug);
+
         startActivity(intent);
     }
 }

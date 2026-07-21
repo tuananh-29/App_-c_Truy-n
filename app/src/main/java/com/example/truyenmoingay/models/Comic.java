@@ -7,6 +7,7 @@ public class Comic {
     public String coverUrl;
     public int chapterCount;
     public float rating;
+    public String slug;
 
     public Comic(int id, String title, String author, int chapterCount, float rating) {
         this.id = id;

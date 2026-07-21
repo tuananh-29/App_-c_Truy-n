@@ -15,6 +15,7 @@
         android:padding="16dp">
 
         <TextView
+            android:id="@+id/tvHashtagTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="# Hashtag"
@@ -153,6 +154,23 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvHashtags"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false" />
+
+            <TextView
+                android:id="@+id/tvComicCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Danh sách truyện"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="10dp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvComics"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="false" />

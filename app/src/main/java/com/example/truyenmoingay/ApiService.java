@@ -49,4 +49,10 @@ public interface ApiService {
             @Query("q") String keyword,
             @Query("page") int page
     );
+
+    @GET("api/truyen-theo-tag")
+    Call<ResponseBody> getComicsByHashtag(@Query("tag") String tag);
+
+    @GET("api/theo-doi")
+    Call<ResponseBody> getFollowingComics();
 }
