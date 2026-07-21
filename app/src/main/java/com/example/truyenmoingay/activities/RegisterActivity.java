@@ -2,6 +2,7 @@ package com.example.truyenmoingay.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -9,7 +10,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.truyenmoingay.ApiService;
 import com.example.truyenmoingay.AuthResponse;
 import com.example.truyenmoingay.R;
 import com.example.truyenmoingay.RetrofitClient;
@@ -46,7 +46,13 @@ public class RegisterActivity extends AppCompatActivity {
                 return;
             }
 
-            RetrofitClient.getApiService().registerUser(name, email, password).enqueue(new Callback<AuthResponse>() {
+            // (Tùy chọn) Kiểm tra độ dài mật khẩu ngay trên Android cho nhanh
+            if (password.length() < 6) {
+                Toast.makeText(RegisterActivity.this, "Mật khẩu phải có ít nhất 6 ký tự!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            RetrofitClient.getApiService().registerUser(name, email, password, password).enqueue(new Callback<AuthResponse>() {
                 @Override
                 public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
                     if (response.isSuccessful()) {
@@ -54,13 +60,25 @@ public class RegisterActivity extends AppCompatActivity {
                         startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
                         finish();
                     } else {
-                        Toast.makeText(RegisterActivity.this, "Email đã tồn tại hoặc không hợp lệ", Toast.LENGTH_SHORT).show();
+                        // BẮT LỖI THỰC SỰ TỪ SERVER
+                        String realError = "Lỗi không xác định";
+                        try {
+                            if (response.errorBody() != null) {
+                                realError = response.errorBody().string();
+                                Log.e("API_REGISTER_ERROR", "Lỗi Server trả về: " + realError);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        Toast.makeText(RegisterActivity.this, "Đăng ký thất bại! Kiểm tra Logcat.", Toast.LENGTH_SHORT).show();
                     }
                 }
 
                 @Override
                 public void onFailure(Call<AuthResponse> call, Throwable t) {
-                    Toast.makeText(RegisterActivity.this, "Lỗi kết nối Server", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, "Lỗi kết nối Server: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.e("API_REGISTER_FAIL", "Lỗi mạng: " + t.getMessage());
                 }
             });
         });
