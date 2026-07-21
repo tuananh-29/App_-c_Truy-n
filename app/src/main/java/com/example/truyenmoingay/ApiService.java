@@ -38,11 +38,18 @@ public interface ApiService {
     @GET("api/truyen/{slug}")
     Call<ResponseBody> getDetail(@Path("slug") String slug);
 
+    // KHÔNG dùng nữa - endpoint OTruyen tương ứng "/truyen-tranh/{slug}/chuong-{chapter}" không tồn tại.
+    // Giữ lại để không vỡ chỗ khác nếu còn tham chiếu, nhưng dùng getChapterContent() bên dưới thay thế.
     @GET("api/chuong/{slug}/{chapter}")
     Call<ResponseBody> getChapter(
             @Path("slug") String slug,
             @Path("chapter") int chapter
     );
+
+    // Proxy cho "chapter_api_data" lấy được từ getDetail() -> data.item.chapters[].server_data[].chapter_api_data
+    // url phải là URL đầy đủ (ví dụ "https://sv1.otruyencdn.com/v1/api/chapter/xxxxx")
+    @GET("api/chuong-noi-dung")
+    Call<ResponseBody> getChapterContent(@Query("url") String chapterApiData);
 
     @GET("api/tim-kiem")
     Call<ResponseBody> search(

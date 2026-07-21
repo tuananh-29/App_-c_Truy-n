@@ -19,9 +19,11 @@ import com.example.truyenmoingay.RetrofitClient;
 import com.example.truyenmoingay.adapters.ChapterAdapter;
 import com.example.truyenmoingay.models.Chapter;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.ResponseBody;
@@ -33,6 +35,12 @@ public class ComicDetailActivity extends AppCompatActivity {
 
     private TextView tvTitle, tvAuthor, tvDescription;
     private ImageView imgCover;
+    private RecyclerView rvChapters;
+
+    // Danh sách chương thật lấy từ API, song song với chapterApiDataList theo cùng index
+    // (Chapter.id được gán = vị trí trong list, để không cần sửa model Chapter)
+    private final List<Chapter> chapterList = new ArrayList<>();
+    private final List<String> chapterApiDataList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,30 +71,40 @@ public class ComicDetailActivity extends AppCompatActivity {
         if (title != null) tvTitle.setText(title);
         if (author != null) tvAuthor.setText("Tác giả: " + author);
 
-        // Gọi API lấy chi tiết
-        if (slug != null) {
-            loadComicDetail(slug);
-        }
-
-        // Nút Đọc ngay → mở chương 1
-        Button btnRead = findViewById(R.id.btnReadNow);
-        btnRead.setOnClickListener(v -> openReader(1, "Chương 1: Khởi đầu"));
-
-        // Danh sách chương mock
-        RecyclerView rvChapters = findViewById(R.id.rvChapters);
+        // RecyclerView danh sách chương - khởi tạo rỗng, điền dữ liệu thật sau khi API trả về
+        rvChapters = findViewById(R.id.rvChapters);
         rvChapters.setLayoutManager(new LinearLayoutManager(this));
-        rvChapters.setAdapter(new ChapterAdapter(getMockChapters(), chapter -> {
+        rvChapters.setAdapter(new ChapterAdapter(chapterList, chapter -> {
             if (chapter.isLocked()) {
-                // Hiện thông báo đơn giản
                 new androidx.appcompat.app.AlertDialog.Builder(this)
                         .setTitle("Chương bị khóa")
                         .setMessage("Cần " + chapter.getCoinCost() + " coin để mở chương này.")
                         .setPositiveButton("OK", null)
                         .show();
             } else {
-                openReader(chapter.getId(), chapter.getTitle());
+                int index = chapter.getId();
+                if (index >= 0 && index < chapterApiDataList.size()) {
+                    openReader(chapterApiDataList.get(index), chapter.getTitle());
+                } else {
+                    Toast.makeText(this, "Không tìm thấy dữ liệu chương", Toast.LENGTH_SHORT).show();
+                }
             }
         }));
+
+        // Nút Đọc ngay → mở chương đầu tiên (chỉ hoạt động sau khi danh sách chương đã tải xong)
+        Button btnRead = findViewById(R.id.btnReadNow);
+        btnRead.setOnClickListener(v -> {
+            if (!chapterApiDataList.isEmpty()) {
+                openReader(chapterApiDataList.get(0), chapterList.get(0).getTitle());
+            } else {
+                Toast.makeText(this, "Danh sách chương đang tải, vui lòng thử lại", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Gọi API lấy chi tiết + danh sách chương
+        if (slug != null) {
+            loadComicDetail(slug);
+        }
     }
 
     private void loadComicDetail(String slug) {
@@ -96,38 +114,135 @@ public class ComicDetailActivity extends AppCompatActivity {
                 try (ResponseBody responseBody = response.body()) {
                     if (response.isSuccessful() && responseBody != null) {
                         String json = responseBody.string();
-                        JsonObject jsonObject = new Gson().fromJson(json, JsonObject.class);
+                        JsonObject root = new Gson().fromJson(json, JsonObject.class);
 
-                        // Giả sử cấu trúc JSON trả về có các trường: title, author, description, cover
-                        // LƯU Ý: Nếu API Laravel của bạn trả về key khác (ví dụ ten_truyen), hãy đổi chữ "title" thành "ten_truyen" nhé
-                        String title = jsonObject.has("title") ? jsonObject.get("title").getAsString() : "Không rõ tiêu đề";
-                        String author = jsonObject.has("author") ? jsonObject.get("author").getAsString() : "Không rõ tác giả";
-                        String description = jsonObject.has("description") ? jsonObject.get("description").getAsString() : "Không có mô tả";
-                        String coverUrl = jsonObject.has("cover") ? jsonObject.get("cover").getAsString() : "";
+                        // Cấu trúc THẬT của OTruyen API cho truyện:
+                        // {
+                        //   "data": {
+                        //     "item": {
+                        //       "name": "...", "content": "<p>...</p>", "thumb_url": "xxx-thumb.jpg",
+                        //       "author": ["...", "..."],
+                        //       "chapters": [ { "server_name": "...", "server_data": [
+                        //           { "chapter_name": "1", "chapter_title": "", "chapter_api_data": "https://..." }
+                        //       ] } ]
+                        //     },
+                        //     "APP_DOMAIN_CDN_IMAGE": "https://img.otruyenapi.com"
+                        //   }
+                        // }
+                        if (!root.has("data") || !root.get("data").isJsonObject()) {
+                            Toast.makeText(ComicDetailActivity.this, "Dữ liệu truyện không hợp lệ", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        JsonObject data = root.getAsJsonObject("data");
 
-                        // Cập nhật UI
-                        tvTitle.setText(title);
-                        tvAuthor.setText("Tác giả: " + author);
-                        tvDescription.setText(description);
-                        if (getSupportActionBar() != null) {
-                            getSupportActionBar().setTitle(title);
+                        String cdnImage = data.has("APP_DOMAIN_CDN_IMAGE") && !data.get("APP_DOMAIN_CDN_IMAGE").isJsonNull()
+                                ? data.get("APP_DOMAIN_CDN_IMAGE").getAsString() : "";
+
+                        if (!data.has("item") || !data.get("item").isJsonObject()) {
+                            Toast.makeText(ComicDetailActivity.this, "Không tìm thấy thông tin truyện", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        JsonObject item = data.getAsJsonObject("item");
+
+                        String name = item.has("name") && !item.get("name").isJsonNull()
+                                ? item.get("name").getAsString() : "Không rõ tiêu đề";
+
+                        String authorStr = "Không rõ tác giả";
+                        if (item.has("author") && item.get("author").isJsonArray()) {
+                            JsonArray authorArr = item.getAsJsonArray("author");
+                            List<String> authors = new ArrayList<>();
+                            for (JsonElement el : authorArr) {
+                                String a = el.getAsString();
+                                if (a != null && !a.trim().isEmpty()) authors.add(a.trim());
+                            }
+                            if (!authors.isEmpty()) authorStr = String.join(", ", authors);
                         }
 
-                        // Load ảnh bìa bằng Glide và fix lỗi IP máy ảo
+                        String contentHtml = item.has("content") && !item.get("content").isJsonNull()
+                                ? item.get("content").getAsString() : "";
+                        // Bỏ thẻ HTML đơn giản (API trả content dạng "<p>...</p>")
+                        String description = contentHtml.replaceAll("<[^>]*>", "").trim();
+                        if (description.isEmpty()) description = "Không có mô tả";
+
+                        String thumbUrl = item.has("thumb_url") && !item.get("thumb_url").isJsonNull()
+                                ? item.get("thumb_url").getAsString() : "";
+                        String coverUrl = "";
+                        if (!cdnImage.isEmpty() && !thumbUrl.isEmpty()) {
+                            coverUrl = cdnImage + "/uploads/comics/" + thumbUrl;
+                        }
+
+                        // Cập nhật UI
+                        tvTitle.setText(name);
+                        tvAuthor.setText("Tác giả: " + authorStr);
+                        tvDescription.setText(description);
+                        if (getSupportActionBar() != null) {
+                            getSupportActionBar().setTitle(name);
+                        }
+
                         if (!coverUrl.isEmpty()) {
                             String fixedCoverUrl = coverUrl.replace("127.0.0.1", "10.0.2.2").replace("localhost", "10.0.2.2");
-
                             Glide.with(ComicDetailActivity.this)
                                     .load(fixedCoverUrl)
-                                    .placeholder(R.drawable.bg_cover_placeholder) // Đã đổi sang placeholder chuẩn của project
+                                    .placeholder(R.drawable.bg_cover_placeholder)
                                     .error(R.drawable.ic_launcher_background)
                                     .into(imgCover);
+                        }
+
+                        // ── Danh sách chương thật ─────────────────────────
+                        chapterList.clear();
+                        chapterApiDataList.clear();
+
+                        if (item.has("chapters") && item.get("chapters").isJsonArray()) {
+                            JsonArray serversArr = item.getAsJsonArray("chapters");
+                            int index = 0;
+                            for (JsonElement serverEl : serversArr) {
+                                if (!serverEl.isJsonObject()) continue;
+                                JsonObject serverObj = serverEl.getAsJsonObject();
+                                if (!serverObj.has("server_data") || !serverObj.get("server_data").isJsonArray()) continue;
+
+                                JsonArray chapArr = serverObj.getAsJsonArray("server_data");
+                                for (JsonElement chapEl : chapArr) {
+                                    if (!chapEl.isJsonObject()) continue;
+                                    JsonObject chapObj = chapEl.getAsJsonObject();
+
+                                    String chapterName = chapObj.has("chapter_name") && !chapObj.get("chapter_name").isJsonNull()
+                                            ? chapObj.get("chapter_name").getAsString() : "?";
+                                    String chapterTitle = chapObj.has("chapter_title") && !chapObj.get("chapter_title").isJsonNull()
+                                            ? chapObj.get("chapter_title").getAsString() : "";
+                                    String chapterApiData = chapObj.has("chapter_api_data") && !chapObj.get("chapter_api_data").isJsonNull()
+                                            ? chapObj.get("chapter_api_data").getAsString() : "";
+
+                                    if (chapterApiData.isEmpty()) continue; // không có link thì bỏ qua, không cho mở
+
+                                    String displayTitle = "Chương " + chapterName
+                                            + (chapterTitle != null && !chapterTitle.trim().isEmpty() ? ": " + chapterTitle.trim() : "");
+
+                                    // id = vị trí trong list (dùng để tra chapterApiDataList khi bấm)
+                                    chapterList.add(new Chapter(index, displayTitle, false, 0, ""));
+                                    chapterApiDataList.add(chapterApiData);
+                                    index++;
+                                }
+                            }
+                        }
+
+                        rvChapters.setAdapter(new ChapterAdapter(chapterList, chapter -> {
+                            int idx = chapter.getId();
+                            if (idx >= 0 && idx < chapterApiDataList.size()) {
+                                openReader(chapterApiDataList.get(idx), chapter.getTitle());
+                            } else {
+                                Toast.makeText(ComicDetailActivity.this, "Không tìm thấy dữ liệu chương", Toast.LENGTH_SHORT).show();
+                            }
+                        }));
+
+                        if (chapterList.isEmpty()) {
+                            Toast.makeText(ComicDetailActivity.this, "Truyện chưa có chương nào", Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         Toast.makeText(ComicDetailActivity.this, "Không thể tải thông tin truyện", Toast.LENGTH_SHORT).show();
                     }
                 } catch (Exception e) {
                     Log.e("ComicDetail", "Error parsing JSON", e);
+                    Toast.makeText(ComicDetailActivity.this, "Lỗi xử lý dữ liệu truyện", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -139,24 +254,11 @@ public class ComicDetailActivity extends AppCompatActivity {
         });
     }
 
-    // ── Mock Data ──────────────────────────────────────────
-    private List<Chapter> getMockChapters() {
-        return Arrays.asList(
-                new Chapter(1,  "Chương 1: Khởi đầu",        false, 0,  "01/01/2024"),
-                new Chapter(2,  "Chương 2: Cuộc gặp gỡ",     false, 0,  "05/01/2024"),
-                new Chapter(3,  "Chương 3: Bí ẩn hé lộ",     false, 0,  "10/01/2024"),
-                new Chapter(4,  "Chương 4: Trận chiến đầu",  false, 0,  "15/01/2024"),
-                new Chapter(5,  "Chương 5: Kẻ thù xuất hiện",true,  5,  "20/01/2024"),
-                new Chapter(6,  "Chương 6: Sức mạnh mới",    true,  5,  "25/01/2024"),
-                new Chapter(7,  "Chương 7: Đỉnh điểm",       true,  10, "30/01/2024"),
-                new Chapter(8,  "Chương 8: Kết cục bất ngờ", true,  10, "05/02/2024")
-        );
-    }
-
-    private void openReader(int chapterId, String chapterTitle) {
+    // chapterApiData: URL đầy đủ lấy từ item.chapters[].server_data[].chapter_api_data
+    private void openReader(String chapterApiData, String chapterTitle) {
         Intent intent = new Intent(this, ReaderActivity.class);
-        intent.putExtra("comic_slug",    getIntent().getStringExtra("comic_slug"));
-        intent.putExtra("chapter_id",    chapterId);
+        intent.putExtra("comic_slug", getIntent().getStringExtra("comic_slug"));
+        intent.putExtra("chapter_api_data", chapterApiData);
         intent.putExtra("chapter_title", chapterTitle);
         startActivity(intent);
     }

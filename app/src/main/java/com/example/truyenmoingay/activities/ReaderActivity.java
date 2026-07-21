@@ -38,8 +38,9 @@ public class ReaderActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reader);
 
-        String slug = getIntent().getStringExtra("comic_slug");
-        int chapterId = getIntent().getIntExtra("chapter_id", 1);
+        // URL "chapter_api_data" lấy từ response detail() của truyện, KHÔNG phải slug/số chương
+        // (endpoint cũ dạng /truyen-tranh/{slug}/chuong-{chapter} không tồn tại trên OTruyen API)
+        String chapterApiData = getIntent().getStringExtra("chapter_api_data");
         String chapterTitle = getIntent().getStringExtra("chapter_title");
 
         // Gán tiêu đề
@@ -57,10 +58,11 @@ public class ReaderActivity extends AppCompatActivity {
         rvPages.setLayoutManager(new LinearLayoutManager(this));
 
         // Gọi API lấy dữ liệu chương
-        if (slug != null) {
-            loadChapterData(slug, chapterId);
+        if (chapterApiData != null && !chapterApiData.isEmpty()) {
+            loadChapterData(chapterApiData);
         } else {
-            // Fallback to mock if no slug
+            // Fallback to mock nếu không có chapter_api_data (ví dụ Activity gọi thiếu extra)
+            Log.w("ReaderActivity", "Thiếu extra 'chapter_api_data', dùng mock data");
             rvPages.setAdapter(new ReaderPageAdapter(getMockPages()));
         }
 
@@ -73,8 +75,13 @@ public class ReaderActivity extends AppCompatActivity {
         );
     }
 
-    private void loadChapterData(String slug, int chapter) {
-        RetrofitClient.getApiService().getChapter(slug, chapter).enqueue(new Callback<ResponseBody>() {
+    // chapterApiData: URL đầy đủ lấy từ response detail() của truyện,
+    // trường item.chapters[].server_data[].chapter_api_data
+    // (ví dụ: "https://sv1.otruyencdn.com/v1/api/chapter/691d4ff2a2ca9f8cba5a0b1d")
+    private void loadChapterData(String chapterApiData) {
+        // Gọi qua backend Laravel: GET /api/chuong-noi-dung?url=<chapterApiData>
+        // Backend sẽ proxy sang đúng domain CDN thật (sv1.otruyencdn.com, sv2..., v.v.)
+        RetrofitClient.getApiService().getChapterContent(chapterApiData).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try (ResponseBody responseBody = response.body()) {
@@ -82,28 +89,65 @@ public class ReaderActivity extends AppCompatActivity {
                         String json = responseBody.string();
                         JsonObject root = new Gson().fromJson(json, JsonObject.class);
 
-                        // Giả sử JSON có dạng: { "data": { "images": ["url1", "url2"] } }
-                        // Hoặc trực tiếp mảng images nếu API đơn giản hơn.
-                        // Dựa vào project này, thường có wrap trong "data"
-                        JsonArray images;
-                        if (root.has("data") && root.get("data").isJsonObject()) {
-                            images = root.getAsJsonObject("data").getAsJsonArray("images");
-                        } else {
-                            images = root.getAsJsonArray("images");
-                        }
+                        // Cấu trúc THẬT đã xác nhận từ chapter_api_data:
+                        // {
+                        //   "status": "success",
+                        //   "data": {
+                        //     "domain_cdn": "https://sv1.otruyencdn.com",
+                        //     "item": {
+                        //       "chapter_path": "uploads/20251119/xxx/chapter_1",
+                        //       "chapter_image": [ { "image_page": 0, "image_file": "page_0.jpg" }, ... ]
+                        //     }
+                        //   }
+                        // }
+                        JsonArray images = null;
+                        String domainCdn = null;
+                        String chapterPath = null;
 
-                        if (images != null) {
-                            pageList.clear();
-                            for (int i = 0; i < images.size(); i++) {
-                                String url = images.get(i).getAsString();
-                                // Thay thế IP localhost bằng 10.0.2.2 cho máy ảo Android
-                                String fixedUrl = url.replace("127.0.0.1", "10.0.2.2")
-                                        .replace("localhost", "10.0.2.2");
-                                pageList.add(fixedUrl);
+                        if (root.has("data") && root.get("data").isJsonObject()) {
+                            JsonObject data = root.getAsJsonObject("data");
+
+                            if (data.has("domain_cdn") && !data.get("domain_cdn").isJsonNull()) {
+                                domainCdn = data.get("domain_cdn").getAsString();
                             }
 
-                            adapter = new ReaderPageAdapter(pageList);
-                            rvPages.setAdapter(adapter);
+                            if (data.has("item") && data.get("item").isJsonObject()) {
+                                JsonObject item = data.getAsJsonObject("item");
+
+                                if (item.has("chapter_path") && !item.get("chapter_path").isJsonNull()) {
+                                    chapterPath = item.get("chapter_path").getAsString();
+                                }
+                                if (item.has("chapter_image") && item.get("chapter_image").isJsonArray()) {
+                                    images = item.getAsJsonArray("chapter_image");
+                                }
+                            }
+                        }
+
+                        if (images != null && domainCdn != null && chapterPath != null && images.size() > 0) {
+                            pageList.clear();
+                            for (int i = 0; i < images.size(); i++) {
+                                JsonObject img = images.get(i).getAsJsonObject();
+                                String imageFile = img.has("image_file") && !img.get("image_file").isJsonNull()
+                                        ? img.get("image_file").getAsString() : "";
+                                if (imageFile.isEmpty()) continue;
+
+                                // domain_cdn + "/" + chapter_path + "/" + image_file
+                                String fullUrl = domainCdn + "/" + chapterPath + "/" + imageFile;
+
+                                // Thay thế IP localhost bằng 10.0.2.2 (chỉ áp dụng nếu backend local trả về, thường không cần ở đây)
+                                fullUrl = fullUrl.replace("127.0.0.1", "10.0.2.2")
+                                        .replace("localhost", "10.0.2.2");
+                                pageList.add(fullUrl);
+                            }
+
+                            if (!pageList.isEmpty()) {
+                                adapter = new ReaderPageAdapter(pageList);
+                                rvPages.setAdapter(adapter);
+                            } else {
+                                Toast.makeText(ReaderActivity.this, "Không có ảnh nào để hiển thị", Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Toast.makeText(ReaderActivity.this, "Không có dữ liệu ảnh chương", Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         Toast.makeText(ReaderActivity.this, "Không thể tải nội dung chương", Toast.LENGTH_SHORT).show();
